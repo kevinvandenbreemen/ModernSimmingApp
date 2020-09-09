@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ModernSimmingApp</string>
+    <string name="test_load_post">Test Loading a Post</string>
 </resources>

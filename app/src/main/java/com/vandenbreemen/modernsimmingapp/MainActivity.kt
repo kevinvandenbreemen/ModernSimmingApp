@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsAPI
+import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsPost
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GooglePostContentLoader
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ const val GOOGLE_GROUPS_BASE_URL = "https://groups.google.com/"
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var googleGroupsRepository: GoogleGroupsRepository
+    private lateinit var googleGroupsRepository: GoogleGroupsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +30,14 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(SimpleXmlConverterFactory.create())
             .build().create(
                 GoogleGroupsAPI::class.java)
-        googleGroupsRepository = GoogleGroupsRepository(googleGroupsApi)
+        googleGroupsRepository = GoogleGroupsRepository(googleGroupsApi, GooglePostContentLoader())
     }
 
     fun testLoadingPost(view: View) {
 
         CoroutineScope(Dispatchers.IO).launch {
-            val content = GooglePostContentLoader().getPostBody("https://groups.google.com/d/msg/uss-odyssey-oe/jLebMNq2V9U/t3XY7i1FAgAJ")
+            val post = GoogleGroupsPost(link = "https://groups.google.com/d/msg/uss-odyssey-oe/jLebMNq2V9U/t3XY7i1FAgAJ")
+            val content = googleGroupsRepository.getContent(post)
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@MainActivity, content, Toast.LENGTH_LONG).show()
             }

@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vandenbreemen.modernsimmingapp.data.localstorage.Post
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -26,6 +27,21 @@ class RoomExperimentingTest {
         )
         dao.storePost(post)
         assertEquals(1, dao.findPosts("content").size)
+    }
+
+    @Test
+    fun testNoMatchForQuery() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
+        val dao = db.postDao()
+        val post = Post(
+            1,
+            1123123143L,
+            "test title",
+            "test content"
+        )
+        dao.storePost(post)
+        assertTrue(dao.findPosts("no such post").isEmpty())
     }
 
 }

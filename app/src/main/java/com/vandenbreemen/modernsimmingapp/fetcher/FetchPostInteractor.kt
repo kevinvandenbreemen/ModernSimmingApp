@@ -19,7 +19,7 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
             filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.forEach { googlePost->
 
                 try {
-                    simpleDateFormat.parse(googlePost.pubDate!!).let { date->
+                    simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
                         val post = Post(
                             1, date.time, googlePost.title!!, googlePost.author!!
                         )

@@ -1,6 +1,8 @@
 package com.vandenbreemen.modernsimmingapp
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -58,5 +60,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun doTestContentProvider(view: View) {
+
+        val url = "content://${SimContentProvider::class.java.canonicalName}/groups/hello-world/list"
+        Log.i("MAIN", "url=$url")
+        applicationContext.contentResolver.query(Uri.parse(url), emptyArray(),null,null)
+
     }
 }

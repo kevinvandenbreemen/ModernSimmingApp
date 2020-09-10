@@ -49,4 +49,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
+
+    //  Mocking Framework
+    def mockk_version = "1.10.0"
+    testImplementation "io.mockk:mockk:$mockk_version"
 }

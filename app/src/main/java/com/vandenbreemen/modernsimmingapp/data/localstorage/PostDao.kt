@@ -8,7 +8,7 @@ import androidx.room.Query
 interface PostDao {
 
     @Insert
-    fun storePost(post: Post)
+    fun storePosts(posts: List<Post>)
 
     @Query("SELECT *, `rowid` from Post WHERE content MATCH :text")
     fun findPosts(text: String): List<Post>

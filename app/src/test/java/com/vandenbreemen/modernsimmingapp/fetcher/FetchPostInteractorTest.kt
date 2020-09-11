@@ -53,7 +53,7 @@ class FetchPostInteractorTest {
         )
 
         interactor.fetch("some-group", 10)
-        verify { mockPostDao.storePost(expectedPost) }
+        verify { mockPostDao.storePosts(listOf(expectedPost)) }
     }
 
 }

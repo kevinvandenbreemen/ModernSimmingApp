@@ -15,19 +15,25 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
     fun fetch(groupName: String, numPosts: Int) {
         val posts = googleGroupsRepository.getSims(groupName, numPosts)
         posts?.apply {
+
             val simpleDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
-            filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.forEach { googlePost->
+
+            val postsToStore = filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.mapNotNull { googlePost->
 
                 try {
                     simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
-                        val post = Post(
+                        return@mapNotNull Post(
                             0, date.time, googlePost.title!!, googlePost.author!!
                         )
-                        database.postDao().storePost(post)
                     }
+                    null
                 } catch(err: Exception) {
                     Log.e(javaClass.canonicalName, "Could not parse post date -- ${googlePost.pubDate}", err)
                 }
+            }
+
+            (postsToStore as? List<Post>)?.let {
+                database.postDao().storePosts(it)
             }
         }
     }

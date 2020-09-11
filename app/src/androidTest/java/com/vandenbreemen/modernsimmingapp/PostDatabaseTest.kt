@@ -25,7 +25,7 @@ class PostDatabaseTest {
             "test title",
             "test content"
         )
-        dao.storePost(post)
+        dao.storePosts(listOf(post))
         assertEquals(1, dao.findPosts("content").size)
     }
 
@@ -40,7 +40,7 @@ class PostDatabaseTest {
             "test title",
             "test content"
         )
-        dao.storePost(post)
+        dao.storePosts(listOf(post))
         assertTrue(dao.findPosts("no such post").isEmpty())
     }
 
@@ -55,8 +55,7 @@ class PostDatabaseTest {
             "test title",
             "test content"
         )
-        dao.storePost(post)
-        dao.storePost(post)
+        dao.storePosts(listOf(post, post.copy()))
 
         val posts = dao.findPosts("content")
         assertEquals(2, posts.size)

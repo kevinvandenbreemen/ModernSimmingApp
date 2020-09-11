@@ -54,8 +54,31 @@ class FetchPostInteractorTest {
             "https://www.example.com"
         )
 
+        every { mockPostDao.findPostByURL("https://www.example.com") } returns listOf()
         interactor.fetch("some-group", 10)
         verify { mockPostDao.storePosts(listOf(expectedPost)) }
+    }
+
+    @Test
+    fun `should not store posts that have already been stored`() {
+        val googlePost = GoogleGroupsPost("Test Post", "https://www.example.com", "Kevin", "Thu, 10 Sep 2020 22:11:10 UTC")
+        every { mockGoogleGroupsRepository.getSims("some-group", 10) } returns listOf(googlePost)
+        every { mockGoogleGroupsRepository.getContent(googlePost) } returns "Test Content"
+
+        //  1599775870000
+        val expectedPost = Post(
+            0,
+            1599775870000,
+            "Test Post",
+            "Test Content",
+            "https://www.example.com"
+        )
+        every { mockPostDao.findPostByURL("https://www.example.com") } returns listOf(expectedPost)
+
+        interactor.fetch("some-group", 10)
+
+        verify(exactly = 0) { mockPostDao.storePosts(any()) }
+
     }
 
 }

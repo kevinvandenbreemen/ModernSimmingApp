@@ -18,7 +18,13 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
 
             val simpleDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
 
-            val postsToStore = filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.mapNotNull { googlePost->
+            val postsToStore =
+                filter { gp ->
+                    gp.link?.let { postUrl ->
+                        return@filter database.postDao().findPostByURL(postUrl).isEmpty()
+                    }
+                    false
+                }.filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.mapNotNull { googlePost->
 
                 googleGroupsRepository.getContent(googlePost) ?.let { postContent ->
                     try {
@@ -34,6 +40,10 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                 }
 
                 null
+            }
+
+            if(postsToStore.isEmpty()) {
+                return
             }
 
             (postsToStore as? List<Post>)?.let {

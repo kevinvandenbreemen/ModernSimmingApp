@@ -43,13 +43,14 @@ class FetchPostInteractorTest {
     fun `should convert the Google Groups posts to Posts for local storage`() {
         val googlePost = GoogleGroupsPost("Test Post", "https://www.example.com", "Kevin", "Thu, 10 Sep 2020 22:11:10 UTC")
         every { mockGoogleGroupsRepository.getSims("some-group", 10) } returns listOf(googlePost)
+        every { mockGoogleGroupsRepository.getContent(googlePost) } returns "Test Content"
 
         //  1599775870000
         val expectedPost = Post(
             0,
             1599775870000,
             "Test Post",
-            "Kevin"
+            "Test Content"
         )
 
         interactor.fetch("some-group", 10)

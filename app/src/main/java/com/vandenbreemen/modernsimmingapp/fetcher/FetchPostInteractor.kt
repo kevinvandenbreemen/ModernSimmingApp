@@ -20,16 +20,20 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
 
             val postsToStore = filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.mapNotNull { googlePost->
 
-                try {
-                    simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
-                        return@mapNotNull Post(
-                            0, date.time, googlePost.title!!, googlePost.author!!
-                        )
+                googleGroupsRepository.getContent(googlePost) ?.let { postContent ->
+                    try {
+                        simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
+                            return@mapNotNull Post(
+                                0, date.time, googlePost.title!!, postContent
+                            )
+                        }
+
+                    } catch(err: Exception) {
+                        Log.e(javaClass.canonicalName, "Could not parse post date -- ${googlePost.pubDate}", err)
                     }
-                    null
-                } catch(err: Exception) {
-                    Log.e(javaClass.canonicalName, "Could not parse post date -- ${googlePost.pubDate}", err)
                 }
+
+                null
             }
 
             (postsToStore as? List<Post>)?.let {

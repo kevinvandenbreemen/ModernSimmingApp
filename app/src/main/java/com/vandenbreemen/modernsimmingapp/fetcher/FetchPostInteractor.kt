@@ -24,7 +24,7 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                     try {
                         simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
                             return@mapNotNull Post(
-                                0, date.time, googlePost.title!!, postContent
+                                0, date.time, googlePost.title!!, postContent, googlePost.link
                             )
                         }
 

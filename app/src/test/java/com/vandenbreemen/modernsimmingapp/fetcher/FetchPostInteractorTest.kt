@@ -50,7 +50,8 @@ class FetchPostInteractorTest {
             0,
             1599775870000,
             "Test Post",
-            "Test Content"
+            "Test Content",
+            "https://www.example.com"
         )
 
         interactor.fetch("some-group", 10)

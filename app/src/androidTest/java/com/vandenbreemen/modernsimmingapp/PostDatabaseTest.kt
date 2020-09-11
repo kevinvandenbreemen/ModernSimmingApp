@@ -44,4 +44,25 @@ class PostDatabaseTest {
         assertTrue(dao.findPosts("no such post").isEmpty())
     }
 
+    @Test
+    fun learningTestHowToSetPrimaryKeyWhenInsertingMultipleRows() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
+        val dao = db.postDao()
+        val post = Post(
+            0,
+            1123123143L,
+            "test title",
+            "test content"
+        )
+        dao.storePost(post)
+        dao.storePost(post)
+
+        val posts = dao.findPosts("content")
+        assertEquals(2, posts.size)
+        assertEquals(1, posts[0].id)
+        assertEquals(2, posts[1].id)
+    }
+
+
 }

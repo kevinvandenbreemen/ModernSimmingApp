@@ -21,7 +21,7 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                 try {
                     simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
                         val post = Post(
-                            1, date.time, googlePost.title!!, googlePost.author!!
+                            0, date.time, googlePost.title!!, googlePost.author!!
                         )
                         database.postDao().storePost(post)
                     }

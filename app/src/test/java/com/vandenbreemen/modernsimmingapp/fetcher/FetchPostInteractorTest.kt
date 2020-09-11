@@ -46,7 +46,7 @@ class FetchPostInteractorTest {
 
         //  1599775870000
         val expectedPost = Post(
-            1,
+            0,
             1599775870000,
             "Test Post",
             "Kevin"

@@ -24,25 +24,34 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                         return@filter database.postDao().findPostByURL(postUrl).isEmpty()
                     }
                     false
-                }.filter { gp->gp.author != null && gp.pubDate != null && gp.title != null }.mapNotNull { googlePost->
+                }.filter { gp -> gp.author != null && gp.pubDate != null && gp.title != null }
+                    .mapNotNull { googlePost ->
 
-                googleGroupsRepository.getContent(googlePost) ?.let { postContent ->
-                    try {
-                        simpleDateFormat.parse(googlePost.pubDate!!)?.let { date->
-                            return@mapNotNull Post(
-                                0, date.time, googlePost.title!!, postContent, googlePost.link
-                            )
+                        googleGroupsRepository.getContent(googlePost)?.let { postContent ->
+                            try {
+                                simpleDateFormat.parse(googlePost.pubDate!!)?.let { date ->
+                                    return@mapNotNull Post(
+                                        0,
+                                        date.time,
+                                        googlePost.title!!,
+                                        postContent,
+                                        googlePost.link
+                                    )
+                                }
+
+                            } catch (err: Exception) {
+                                Log.e(
+                                    javaClass.canonicalName,
+                                    "Could not parse post date -- ${googlePost.pubDate}",
+                                    err
+                                )
+                            }
                         }
 
-                    } catch(err: Exception) {
-                        Log.e(javaClass.canonicalName, "Could not parse post date -- ${googlePost.pubDate}", err)
+                        null
                     }
-                }
 
-                null
-            }
-
-            if(postsToStore.isEmpty()) {
+            if (postsToStore.isEmpty()) {
                 return
             }
 

@@ -19,5 +19,8 @@ data class Post(
     val title: String,
 
     @ColumnInfo(name = "content")
-    val content: String
+    val content: String,
+
+    @ColumnInfo(name = "url")
+    val url: String? = null
 )

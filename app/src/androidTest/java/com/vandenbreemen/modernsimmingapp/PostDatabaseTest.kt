@@ -6,8 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vandenbreemen.modernsimmingapp.data.localstorage.Post
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -63,5 +62,21 @@ class PostDatabaseTest {
         assertEquals(2, posts[1].id)
     }
 
+    @Test
+    fun testCanDetermineNonUniquePostBasedOnPostURL() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
+        val dao = db.postDao()
+        val post = Post(
+            0,
+            1123123143L,
+            "test title",
+            "test content",
+            "http://www.example.com"
+        )
+        dao.storePosts(listOf(post))
+
+        assertFalse(dao.findPostByURL("http://www.example.com").isEmpty())
+    }
 
 }

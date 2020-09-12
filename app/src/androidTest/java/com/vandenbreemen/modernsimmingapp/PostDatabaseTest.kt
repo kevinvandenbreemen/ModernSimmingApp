@@ -99,4 +99,16 @@ class PostDatabaseTest {
         dao.store(Group(0, "test-group"))
     }
 
+    @Test
+    fun testLoadsAllGroups() {
+        val dao = db.groupDao()
+        dao.store(Group(0, "group1"))
+        dao.store(Group(0, "group2"))
+
+        val groups = dao.list()
+        assertEquals(2, groups.size)
+        assertEquals("group1", groups[0].name)
+        assertEquals("group2", groups[1].name)
+    }
+
 }

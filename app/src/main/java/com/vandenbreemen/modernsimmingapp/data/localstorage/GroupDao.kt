@@ -13,4 +13,7 @@ interface GroupDao {
     @Query("select * from `group` where name=:name")
     fun findGroupByName(name: String): Group?
 
+    @Query("select * from `group`")
+    fun list(): List<Group>
+
 }

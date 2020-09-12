@@ -4,19 +4,29 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.vandenbreemen.modernsimmingapp.data.localstorage.Group
 import com.vandenbreemen.modernsimmingapp.data.localstorage.Post
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import junit.framework.TestCase.*
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
+private lateinit var db: PostsDatabase
 
 @RunWith(AndroidJUnit4::class)
 class PostDatabaseTest {
 
+    @Before
+    fun setup() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
+    }
+
+
+
     @Test
     fun testCreateAndSaveData() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
         val dao = db.postDao()
         val post = Post(
             1,
@@ -30,8 +40,6 @@ class PostDatabaseTest {
 
     @Test
     fun testNoMatchForQuery() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
         val dao = db.postDao()
         val post = Post(
             1,
@@ -45,8 +53,6 @@ class PostDatabaseTest {
 
     @Test
     fun learningTestHowToSetPrimaryKeyWhenInsertingMultipleRows() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
         val dao = db.postDao()
         val post = Post(
             0,
@@ -64,8 +70,6 @@ class PostDatabaseTest {
 
     @Test
     fun testCanDetermineNonUniquePostBasedOnPostURL() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val db = Room.inMemoryDatabaseBuilder(context, PostsDatabase::class.java).build()
         val dao = db.postDao()
         val post = Post(
             0,
@@ -77,6 +81,14 @@ class PostDatabaseTest {
         dao.storePosts(listOf(post))
 
         assertFalse(dao.findPostByURL("http://www.example.com").isEmpty())
+    }
+
+    @Test
+    fun testStoresGroup() {
+        val dao = db.groupDao()
+        val group = Group(0, "test-group")
+        dao.store(group)
+        assertEquals(Group(1, "test-group"), dao.findGroupByName("test-group"))
     }
 
 }

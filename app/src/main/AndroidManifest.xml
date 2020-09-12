@@ -11,11 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ActivityAddGroup"></activity>
+
         <provider
             android:name=".SimContentProvider"
             android:authorities="com.vandenbreemen.modernsimmingapp.SimContentProvider"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

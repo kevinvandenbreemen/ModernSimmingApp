@@ -3,4 +3,8 @@
     <string name="test_load_post">Test Loading a Post</string>
     <string name="test_load_group">Test Loading a Group</string>
     <string name="test_content_provider">Test Content Provider</string>
+    <string name="test_worker">Test Work Request</string>
+    <string name="add_group">New Group</string>
+    <string name="group_name">Group Name</string>
+    <string name="add_group_success">Successfully added group</string>
 </resources>

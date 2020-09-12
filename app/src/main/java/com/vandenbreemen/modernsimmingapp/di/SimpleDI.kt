@@ -15,6 +15,12 @@ class SimpleDI {
 
     companion object {
         private lateinit var postDatabase: PostsDatabase
+        private fun getPostDatabase(context: Context): PostsDatabase {
+            if(!::postDatabase.isInitialized){
+                postDatabase = Room.databaseBuilder(context, PostsDatabase::class.java, "PostDB").build()
+            }
+            return postDatabase
+        }
     }
 
     fun getFetchPostInteractor(context: Context): FetchPostInteractor {
@@ -30,10 +36,7 @@ class SimpleDI {
     }
 
     fun getPostsDatabase(context: Context): PostsDatabase {
-        if(postDatabase == null) {
-            postDatabase = Room.databaseBuilder(context, PostsDatabase::class.java, "PostDB").build()
-        }
-        return postDatabase
+        return SimpleDI.getPostDatabase(context)
     }
 
 }

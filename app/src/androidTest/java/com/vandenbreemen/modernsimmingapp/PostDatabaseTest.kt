@@ -1,6 +1,7 @@
 package com.vandenbreemen.modernsimmingapp
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -89,6 +90,13 @@ class PostDatabaseTest {
         val group = Group(0, "test-group")
         dao.store(group)
         assertEquals(Group(1, "test-group"), dao.findGroupByName("test-group"))
+    }
+
+    @Test(expected = SQLiteConstraintException::class)
+    fun testCannotStoreSameGroupTwice() {
+        val dao = db.groupDao()
+        dao.store(Group(0, "test-group"))
+        dao.store(Group(0, "test-group"))
     }
 
 }

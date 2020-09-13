@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vandenbreemen.modernsimmingapp.data.localstorage.Group
-import com.vandenbreemen.modernsimmingapp.data.localstorage.Post
+import com.vandenbreemen.modernsimmingapp.data.localstorage.PostBean
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import junit.framework.TestCase.*
 import org.junit.Before
@@ -28,11 +28,16 @@ class PostDatabaseTest {
 
     @Test
     fun testCreateAndSaveData() {
+
+        val group = Group(0, "test-group")
+        db.groupDao().store(group)
+
         val dao = db.postDao()
-        val post = Post(
+        val post = PostBean(
             1,
-            1123123143L,
             "test title",
+            "http://www.example.com",
+            1,
             "test content"
         )
         dao.storePosts(listOf(post))
@@ -41,11 +46,16 @@ class PostDatabaseTest {
 
     @Test
     fun testNoMatchForQuery() {
+
+        val group = Group(0, "test-group")
+        db.groupDao().store(group)
+
         val dao = db.postDao()
-        val post = Post(
+        val post = PostBean(
             1,
-            1123123143L,
             "test title",
+            "http://www.example.com",
+            1,
             "test content"
         )
         dao.storePosts(listOf(post))
@@ -54,14 +64,25 @@ class PostDatabaseTest {
 
     @Test
     fun learningTestHowToSetPrimaryKeyWhenInsertingMultipleRows() {
+
+        val group = Group(0, "test-group")
+        db.groupDao().store(group)
+
         val dao = db.postDao()
-        val post = Post(
-            0,
-            1123123143L,
+        val post = PostBean(
+            1,
             "test title",
+            "http://www.example.com",
+            1,
             "test content"
         )
-        dao.storePosts(listOf(post, post.copy()))
+        dao.storePosts(listOf(post, PostBean(
+            1,
+            "test title",
+            "http://www.example.com",
+            1,
+            "test content"
+        )))
 
         val posts = dao.findPosts("content")
         assertEquals(2, posts.size)
@@ -71,13 +92,17 @@ class PostDatabaseTest {
 
     @Test
     fun testCanDetermineNonUniquePostBasedOnPostURL() {
+
+        val group = Group(0, "test-group")
+        db.groupDao().store(group)
+
         val dao = db.postDao()
-        val post = Post(
-            0,
-            1123123143L,
+        val post = PostBean(
+            1,
             "test title",
-            "test content",
-            "http://www.example.com"
+            "http://www.example.com",
+            1,
+            "test content"
         )
         dao.storePosts(listOf(post))
 
@@ -120,8 +145,12 @@ class PostDatabaseTest {
 
         val storedGroup = dao.findGroupByName("group1")
 
-        val post = Post(
-            0, 123, "test", "test content", "http://www.example.com", storedGroup!!.id
+        val post = PostBean(
+            1,
+            "test",
+            "http://www.example.com",
+            1,
+            "test content"
         )
         val postDao = db.postDao()
         postDao.storePosts(listOf(post))

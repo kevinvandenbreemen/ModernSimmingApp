@@ -1,22 +1,47 @@
 package com.vandenbreemen.modernsimmingapp.data.localstorage
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import android.util.Log
+import androidx.room.*
 
 @Dao
-interface PostDao {
+abstract class PostDao {
 
     @Insert
-    fun storePosts(posts: List<Post>)
+    @Transaction
+    fun storePosts(posts: List<PostBean>) {
+        posts.forEach {post->
+            val content = post.content
 
-    @Query("SELECT *, `rowid` from Post WHERE content MATCH :text")
-    fun findPosts(text: String): List<Post>
+            val postId = insertRawPost(Post(
+                0, post.postedDate, post.title, post.url, post.groupId
+            )).toInt()
 
-    @Query("SELECT *, `rowid` from Post WHERE url=:url")
-    fun findPostByURL(url: String): List<Post>
+            Log.d(javaClass.simpleName, "Storing PostContent (${postId.toInt()}, ($content))")
 
-    @Query("SELECT *, `rowid` from Post WHERE groupId = :groupId order by post_date desc limit :maxPosts")
-    fun listPostsForGroup(groupId: Int, maxPosts: Int): List<Post>
+            val contentId = insertRawPostContent(PostContent(
+                0, postId.toInt(), content
+            )).toInt()
+
+            updateRawPost(Post(postId, post.postedDate, post.title, post.url, post.groupId, contentId))
+        }
+    }
+
+    @Insert
+    abstract fun insertRawPost(post: Post): Long
+
+    @Update
+    abstract fun updateRawPost(post: Post)
+
+    @Insert
+    abstract fun insertRawPostContent(postContent: PostContent): Long
+
+    @Query("SELECT * from Post WHERE contentId in (SELECT `rowid` from PostContent WHERE content MATCH :text)")
+    abstract fun findPosts(text: String): List<Post>
+
+    @Query("SELECT * from Post WHERE url=:url")
+    abstract fun findPostByURL(url: String): List<Post>
+
+    @Query("SELECT * from Post WHERE groupId = :groupId order by post_date desc limit :maxPosts")
+    abstract fun listPostsForGroup(groupId: Int, maxPosts: Int): List<Post>
 
 }

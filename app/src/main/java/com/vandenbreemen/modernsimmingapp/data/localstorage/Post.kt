@@ -2,14 +2,14 @@ package com.vandenbreemen.modernsimmingapp.data.localstorage
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Fts4
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
-@Entity
-@Fts4(notIndexed = ["post_date"])
+@Entity(foreignKeys = [ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"], onDelete = CASCADE)])
 data class Post(
-    @PrimaryKey
-    @ColumnInfo(name = "rowid")
+
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
 
     @ColumnInfo(name = "post_date")
@@ -18,11 +18,9 @@ data class Post(
     @ColumnInfo(name = "title")
     val title: String,
 
-    @ColumnInfo(name = "content")
-    val content: String,
-
     @ColumnInfo(name = "url")
     val url: String? = null,
 
-    val groupId: Int? = null
+    val groupId: Int? = null,
+    var contentId: Int? = null
 )

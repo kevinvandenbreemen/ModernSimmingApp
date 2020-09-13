@@ -1,7 +1,7 @@
 package com.vandenbreemen.modernsimmingapp.fetcher
 
 import android.util.Log
-import com.vandenbreemen.modernsimmingapp.data.localstorage.Post
+import com.vandenbreemen.modernsimmingapp.data.localstorage.PostBean
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import java.text.SimpleDateFormat
@@ -13,6 +13,11 @@ import java.util.*
 class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsRepository, private val database: PostsDatabase) {
 
     fun fetch(groupName: String, numPosts: Int) {
+
+        val group = database.groupDao().findGroupByName(groupName)
+            ?: throw RuntimeException("No group called $groupName exists in the app")
+        val groupId = group.id
+
         val posts = googleGroupsRepository.getSims(groupName, numPosts)
         posts?.apply {
 
@@ -30,12 +35,12 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                         googleGroupsRepository.getContent(googlePost)?.let { postContent ->
                             try {
                                 simpleDateFormat.parse(googlePost.pubDate!!)?.let { date ->
-                                    return@mapNotNull Post(
-                                        0,
+                                    return@mapNotNull PostBean(
                                         date.time,
                                         googlePost.title!!,
-                                        postContent,
-                                        googlePost.link
+                                        googlePost.link!!,
+                                        groupId,
+                                        postContent
                                     )
                                 }
 
@@ -55,7 +60,7 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                 return
             }
 
-            (postsToStore as? List<Post>)?.let {
+            (postsToStore as? List<PostBean>)?.let {
                 database.postDao().storePosts(it)
             }
         }

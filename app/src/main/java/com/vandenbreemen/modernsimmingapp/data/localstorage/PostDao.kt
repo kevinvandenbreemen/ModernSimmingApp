@@ -16,4 +16,7 @@ interface PostDao {
     @Query("SELECT *, `rowid` from Post WHERE url=:url")
     fun findPostByURL(url: String): List<Post>
 
+    @Query("SELECT *, `rowid` from Post WHERE groupId = :groupId order by post_date desc limit :maxPosts")
+    fun listPostsForGroup(groupId: Int, maxPosts: Int): List<Post>
+
 }

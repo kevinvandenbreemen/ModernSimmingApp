@@ -111,4 +111,27 @@ class PostDatabaseTest {
         assertEquals("group2", groups[1].name)
     }
 
+    @Test
+    fun testAssociatesPostWithGroup() {
+
+        val dao = db.groupDao()
+        dao.store(Group(0, "group1"))
+        dao.store(Group(0, "group2"))
+
+        val storedGroup = dao.findGroupByName("group1")
+
+        val post = Post(
+            0, 123, "test", "test content", "http://www.example.com", storedGroup!!.id
+        )
+        val postDao = db.postDao()
+        postDao.storePosts(listOf(post))
+
+        val postsForGroup = postDao.listPostsForGroup(storedGroup!!.id, 10)
+        assertEquals(1, postsForGroup.size)
+        assertEquals("test", postsForGroup[0].title)
+
+        assertTrue(postDao.listPostsForGroup(2, 10).isEmpty())
+
+    }
+
 }

@@ -22,5 +22,7 @@ data class Post(
     val content: String,
 
     @ColumnInfo(name = "url")
-    val url: String? = null
+    val url: String? = null,
+
+    val groupId: Int? = null
 )

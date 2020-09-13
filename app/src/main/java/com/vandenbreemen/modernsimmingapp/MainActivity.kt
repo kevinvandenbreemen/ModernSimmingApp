@@ -1,12 +1,13 @@
 package com.vandenbreemen.modernsimmingapp
 
+import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -15,6 +16,7 @@ import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsPost
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GooglePostContentLoader
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import com.vandenbreemen.modernsimmingapp.services.PostFetchingWorker
+import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
@@ -28,7 +30,18 @@ const val GOOGLE_GROUPS_BASE_URL = "https://groups.google.com/"
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        const val GET_GROUP_NAME_TO_FETCH_POSTS_FOR = 111
+    }
+
     private lateinit var googleGroupsRepository: GoogleGroupsRepository
+
+    private val simContentProviderInteractor: SimContentProviderInteractor by lazy {
+        applicationContext?.let { ctx ->
+            return@lazy SimContentProviderInteractor(ctx)
+        }
+        throw RuntimeException("Missing app context")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +52,10 @@ class MainActivity : AppCompatActivity() {
             .build().create(
                 GoogleGroupsAPI::class.java)
         googleGroupsRepository = GoogleGroupsRepository(googleGroupsApi, GooglePostContentLoader())
+
+        simContentProviderInteractor.groupNamesLiveData.observe(this, Observer { groupNames->
+            Toast.makeText(this@MainActivity, groupNames.toString(), Toast.LENGTH_LONG).show()
+        })
     }
 
     fun testLoadingPost(view: View) {
@@ -69,34 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun doTestContentProvider(view: View) {
-
-        val url = "content://${SimContentProvider::class.java.canonicalName}/groups/"
-        Log.i("MAIN", "url=$url")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            applicationContext.contentResolver.query(Uri.parse(url), emptyArray(),null,null)?.let { cursor ->
-                try {
-
-                    val groupNames: MutableList<String> = mutableListOf()
-
-                    if(cursor.moveToFirst()) {
-                        do {
-                            groupNames.add(cursor.getString(cursor.getColumnIndex("name")))
-                        } while(cursor.moveToNext())
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, groupNames.toString(), Toast.LENGTH_LONG).show()
-                    }
-
-                } finally {
-                    cursor.close()
-                }
-            }
-
-        }
-
-
+        simContentProviderInteractor.fetchGroupNames()
     }
 
     fun testWorkRequest(view: View) {
@@ -111,5 +101,28 @@ class MainActivity : AppCompatActivity() {
 
     fun addGroup(view: View) {
         startActivity(Intent(this, ActivityAddGroup::class.java))
+    }
+
+    fun testLoadingPosts(view: View) {
+        val intent = Intent(this, ActivityGroupSelect::class.java)
+        startActivityForResult(intent, GET_GROUP_NAME_TO_FETCH_POSTS_FOR)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(data == null) {
+            return
+        }
+
+        when(requestCode) {
+            GET_GROUP_NAME_TO_FETCH_POSTS_FOR -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    val groupName = data.getStringExtra(ActivityGroupSelect.SELECTED_GROUP)
+                    Toast.makeText(this, "Selected $groupName", LENGTH_LONG).show()
+                }
+            }
+            else -> {}
+        }
     }
 }

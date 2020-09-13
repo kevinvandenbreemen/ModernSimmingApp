@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityAddGroup"></activity>
+        <activity android:name=".ActivityGroupSelect"></activity>
+        <activity android:name=".ActivityAddGroup" />
 
         <provider
             android:name=".SimContentProvider"

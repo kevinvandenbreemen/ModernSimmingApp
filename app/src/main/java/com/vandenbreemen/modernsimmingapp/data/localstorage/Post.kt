@@ -4,7 +4,7 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 
 @Entity(
-    indices = [Index("url", unique = true)],
+    indices = [Index("url", unique = true), Index("groupId", name = "idx_groupId")],
     foreignKeys = [ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"], onDelete = CASCADE)]
 )
 data class Post(

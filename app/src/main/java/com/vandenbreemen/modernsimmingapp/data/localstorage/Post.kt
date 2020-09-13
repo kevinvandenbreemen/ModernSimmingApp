@@ -1,12 +1,12 @@
 package com.vandenbreemen.modernsimmingapp.data.localstorage
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = [ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"], onDelete = CASCADE)])
+@Entity(
+    indices = [Index("url", unique = true)],
+    foreignKeys = [ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"], onDelete = CASCADE)]
+)
 data class Post(
 
     @PrimaryKey(autoGenerate = true)

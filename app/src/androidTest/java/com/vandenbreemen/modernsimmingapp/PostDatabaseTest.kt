@@ -79,7 +79,7 @@ class PostDatabaseTest {
         dao.storePosts(listOf(post, PostBean(
             1,
             "test title",
-            "http://www.example.com",
+            "http://www.example.com/1",
             1,
             "test content"
         )))

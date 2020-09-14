@@ -1,6 +1,5 @@
 package com.vandenbreemen.modernsimmingapp.data.localstorage
 
-import android.util.Log
 import androidx.room.*
 
 @Dao
@@ -15,8 +14,6 @@ abstract class PostDao {
             val postId = insertRawPost(Post(
                 0, post.postedDate, post.title, post.url, post.groupId
             )).toInt()
-
-            Log.d(javaClass.simpleName, "Storing PostContent (${postId.toInt()}, ($content))")
 
             val contentId = insertRawPostContent(PostContent(
                 0, postId.toInt(), content

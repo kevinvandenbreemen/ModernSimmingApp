@@ -41,7 +41,16 @@ abstract class PostDao {
     @Query("SELECT * from Post WHERE url=:url")
     abstract fun findPostByURL(url: String): List<Post>
 
+    /**
+     * Fetches raw posts (without content) for the group
+     */
     @Query("SELECT * from Post WHERE groupId = :groupId order by post_date desc limit :maxPosts")
-    abstract fun listPostsForGroup(groupId: Int, maxPosts: Int): List<Post>
+    abstract fun fetchRawPostsForGroup(groupId: Int, maxPosts: Int): List<Post>
+
+    /**
+     * Load the content of the post with the given id
+     */
+    @Query("SELECT content FROM PostContent where postId = :postId")
+    abstract fun loadContent(postId: Int): String?
 
 }

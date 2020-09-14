@@ -66,9 +66,36 @@ class SimContentProvider : ContentProvider() {
 
             Log.i(AUTHORITY, "LIST SIMS IN GROUP")
             val groupName = uri.pathSegments[1]
-            Log.i(AUTHORITY, "grpName=${uri.pathSegments[1]}")
 
+            postDatabase.groupDao().findGroupByName(groupName)?.let { group ->
 
+                Log.d(javaClass.simpleName, "found group $group for request")
+
+                val rawPosts = postDatabase.postDao().fetchRawPostsForGroup(group.id, 10)
+
+                Log.d(javaClass.simpleName, "Will provide posts [$rawPosts]")
+
+                val cursor = MatrixCursor(arrayOf(
+                    "postedDate",
+                    "title",
+                    "url",
+                    "content"
+                ))
+
+                rawPosts.forEach { post->
+                    postDatabase.postDao().loadContent(post.id)?.let { content->
+                        cursor.newRow().apply {
+                            add("postedDate", post.postedDate)
+                            add("title", post.title)
+                            add("url", post.url)
+                            add("content", content)
+                        }
+                    }
+                }
+
+                return cursor
+
+            }
 
         } else if(uriMatcher.match(uri) == ID_LIST_GROUPS) {
             val groups = postDatabase.groupDao().list()

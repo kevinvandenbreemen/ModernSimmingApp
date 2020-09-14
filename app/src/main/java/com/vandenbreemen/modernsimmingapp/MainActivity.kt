@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -56,6 +55,10 @@ class MainActivity : AppCompatActivity() {
         simContentProviderInteractor.groupNamesLiveData.observe(this, Observer { groupNames->
             Toast.makeText(this@MainActivity, groupNames.toString(), Toast.LENGTH_LONG).show()
         })
+
+        simContentProviderInteractor.postsLiveDate.observe(this, Observer { posts->
+            Toast.makeText(this@MainActivity, posts.toString(), Toast.LENGTH_SHORT).show()
+        })
     }
 
     fun testLoadingPost(view: View) {
@@ -91,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 
     fun testWorkRequest(view: View) {
 
-        val workRequest = PeriodicWorkRequest.Builder(PostFetchingWorker::class.java, 5, TimeUnit.SECONDS).build()
+        val workRequest = PeriodicWorkRequest.Builder(PostFetchingWorker::class.java, 20, TimeUnit.MINUTES).build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork("${applicationContext.packageName}/${PostFetchingWorker::class.java.canonicalName}",
                 ExistingPeriodicWorkPolicy.KEEP, workRequest
@@ -118,8 +121,9 @@ class MainActivity : AppCompatActivity() {
         when(requestCode) {
             GET_GROUP_NAME_TO_FETCH_POSTS_FOR -> {
                 if(resultCode == Activity.RESULT_OK) {
-                    val groupName = data.getStringExtra(ActivityGroupSelect.SELECTED_GROUP)
-                    Toast.makeText(this, "Selected $groupName", LENGTH_LONG).show()
+                    data.getStringExtra(ActivityGroupSelect.SELECTED_GROUP)?.let { groupName->
+                        simContentProviderInteractor.fetchGroupPosts(groupName)
+                    }
                 }
             }
             else -> {}

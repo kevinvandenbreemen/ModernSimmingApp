@@ -45,6 +45,25 @@ class PostDatabaseTest {
     }
 
     @Test
+    fun testGetContentForPost() {
+        val group = Group(0, "test-group")
+        db.groupDao().store(group)
+
+        val dao = db.postDao()
+        val post = PostBean(
+            1,
+            "test title",
+            "http://www.example.com",
+            1,
+            "test content"
+        )
+        dao.storePosts(listOf(post))
+
+        val postContent = dao.loadContent(1)
+        assertEquals("test content", postContent)
+    }
+
+    @Test
     fun testNoMatchForQuery() {
 
         val group = Group(0, "test-group")
@@ -155,11 +174,11 @@ class PostDatabaseTest {
         val postDao = db.postDao()
         postDao.storePosts(listOf(post))
 
-        val postsForGroup = postDao.listPostsForGroup(storedGroup!!.id, 10)
+        val postsForGroup = postDao.fetchRawPostsForGroup(storedGroup!!.id, 10)
         assertEquals(1, postsForGroup.size)
         assertEquals("test", postsForGroup[0].title)
 
-        assertTrue(postDao.listPostsForGroup(2, 10).isEmpty())
+        assertTrue(postDao.fetchRawPostsForGroup(2, 10).isEmpty())
 
     }
 

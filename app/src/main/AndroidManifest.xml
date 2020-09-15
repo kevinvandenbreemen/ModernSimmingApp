@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <permission android:name="com.vandenbreemen.modernsimming.READ" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +19,7 @@
         <provider
             android:name=".SimContentProvider"
             android:authorities="com.vandenbreemen.modernsimmingapp.SimContentProvider"
+            android:readPermission="com.vandenbreemen.modernsimming.READ"
             android:enabled="true"
             android:exported="true" />
 

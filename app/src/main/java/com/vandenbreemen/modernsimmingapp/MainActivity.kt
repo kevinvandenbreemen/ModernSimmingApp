@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         simContentProviderInteractor.postsLiveDate.observe(this, Observer { posts->
-            Toast.makeText(this@MainActivity, posts.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, posts.map { p->p.title }.toString(), Toast.LENGTH_LONG).show()
         })
     }
 
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             GET_GROUP_NAME_TO_FETCH_POSTS_FOR -> {
                 if(resultCode == Activity.RESULT_OK) {
                     data.getStringExtra(ActivityGroupSelect.SELECTED_GROUP)?.let { groupName->
-                        simContentProviderInteractor.fetchGroupPosts(groupName)
+                        simContentProviderInteractor.fetchGroupPosts(groupName, 2)
                     }
                 }
             }

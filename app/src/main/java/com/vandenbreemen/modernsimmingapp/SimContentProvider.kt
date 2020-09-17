@@ -67,11 +67,14 @@ class SimContentProvider : ContentProvider() {
             Log.i(AUTHORITY, "LIST SIMS IN GROUP")
             val groupName = uri.pathSegments[1]
 
+            var postCount = 10
+            uri.getQueryParameter("count")?.let { count->postCount = count.toInt() }
+
             postDatabase.groupDao().findGroupByName(groupName)?.let { group ->
 
                 Log.d(javaClass.simpleName, "found group $group for request")
 
-                val rawPosts = postDatabase.postDao().fetchRawPostsForGroup(group.id, 10)
+                val rawPosts = postDatabase.postDao().fetchRawPostsForGroup(group.id, postCount)
 
                 Log.d(javaClass.simpleName, "Will provide posts [$rawPosts]")
 

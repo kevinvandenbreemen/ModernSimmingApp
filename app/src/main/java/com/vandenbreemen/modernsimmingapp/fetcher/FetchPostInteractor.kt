@@ -12,7 +12,7 @@ import java.util.*
  */
 class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsRepository, private val database: PostsDatabase) {
 
-    fun fetch(groupName: String, numPosts: Int) {
+    fun fetch(groupName: String, numPosts: Int): Boolean {
 
         val group = database.groupDao().findGroupByName(groupName)
             ?: throw RuntimeException("No group called $groupName exists in the app")
@@ -57,13 +57,17 @@ class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsReposi
                     }
 
             if (postsToStore.isEmpty()) {
-                return
+                return false
             }
 
             (postsToStore as? List<PostBean>)?.let {
                 database.postDao().storePosts(it)
-            }
+            } ?: return false
+
+            return true
         }
+
+        return false
     }
 
 

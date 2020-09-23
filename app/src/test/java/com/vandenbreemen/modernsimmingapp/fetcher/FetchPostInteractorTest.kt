@@ -6,6 +6,8 @@ import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -62,6 +64,26 @@ class FetchPostInteractorTest {
     }
 
     @Test
+    fun `should return true when at least one post was stored`() {
+        every { mockGroupDao.findGroupByName("some-group") } returns Group(1, "some-group")
+        val googlePost = GoogleGroupsPost("Test Post", "https://www.example.com", "Kevin", "Thu, 10 Sep 2020 22:11:10 UTC")
+        every { mockGoogleGroupsRepository.getSims("some-group", 10) } returns listOf(googlePost)
+        every { mockGoogleGroupsRepository.getContent(googlePost) } returns "Test Content"
+
+        //  1599775870000
+        val expectedPost = PostBean(
+            1599775870000,
+            "Test Post",
+            "https://www.example.com",
+            1,
+            "Test Content"
+        )
+
+        every { mockPostDao.findPostByURL("https://www.example.com") } returns listOf()
+        assertTrue(interactor.fetch("some-group", 10))
+    }
+
+    @Test
     fun `should not store posts that have already been stored`() {
         every { mockGroupDao.findGroupByName("some-group") } returns Group(1, "some-group")
         val googlePost = GoogleGroupsPost("Test Post", "https://www.example.com", "Kevin", "Thu, 10 Sep 2020 22:11:10 UTC")
@@ -90,6 +112,37 @@ class FetchPostInteractorTest {
         interactor.fetch("some-group", 10)
 
         verify(exactly = 0) { mockPostDao.storePosts(any()) }
+
+    }
+
+    @Test
+    fun `should return false when no new posts stored`() {
+        every { mockGroupDao.findGroupByName("some-group") } returns Group(1, "some-group")
+        val googlePost = GoogleGroupsPost("Test Post", "https://www.example.com", "Kevin", "Thu, 10 Sep 2020 22:11:10 UTC")
+        every { mockGoogleGroupsRepository.getSims("some-group", 10) } returns listOf(googlePost)
+        every { mockGoogleGroupsRepository.getContent(googlePost) } returns "Test Content"
+
+        //  1599775870000
+
+        val expectedPostToBeStored = PostBean(
+            0,
+            "Test Post",
+            "http://www.example.com",
+            1,
+            "Test Content"
+        )
+
+        val expectedPostToBeFound = Post(
+            0,
+            1599775870000,
+            "Test Post",
+            "https://www.example.com",
+            1
+        )
+        every { mockPostDao.findPostByURL("https://www.example.com") } returns listOf(expectedPostToBeFound)
+
+        assertFalse(interactor.fetch("some-group", 10))
+
 
     }
 

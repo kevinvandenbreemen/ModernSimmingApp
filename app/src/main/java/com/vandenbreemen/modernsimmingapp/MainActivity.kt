@@ -10,30 +10,29 @@ import androidx.lifecycle.Observer
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsAPI
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsPost
-import com.vandenbreemen.modernsimmingapp.data.googlegroups.GooglePostContentLoader
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import com.vandenbreemen.modernsimmingapp.services.PostFetchingWorker
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-const val GOOGLE_GROUPS_BASE_URL = "https://groups.google.com/"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     companion object {
         const val GET_GROUP_NAME_TO_FETCH_POSTS_FOR = 111
     }
 
-    private lateinit var googleGroupsRepository: GoogleGroupsRepository
+    @Inject
+    lateinit var googleGroupsRepository: GoogleGroupsRepository
 
     private val simContentProviderInteractor: SimContentProviderInteractor by lazy {
         applicationContext?.let { ctx ->
@@ -45,12 +44,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val googleGroupsApi = Retrofit.Builder().baseUrl(GOOGLE_GROUPS_BASE_URL)
-            .addConverterFactory(SimpleXmlConverterFactory.create())
-            .build().create(
-                GoogleGroupsAPI::class.java)
-        googleGroupsRepository = GoogleGroupsRepository(googleGroupsApi, GooglePostContentLoader())
 
         simContentProviderInteractor.groupNamesLiveData.observe(this, Observer { groupNames->
             Toast.makeText(this@MainActivity, groupNames.toString(), Toast.LENGTH_LONG).show()

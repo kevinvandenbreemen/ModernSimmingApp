@@ -2,11 +2,11 @@ package com.vandenbreemen.modernsimmingapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.vandenbreemen.modernsimmingapp.GOOGLE_GROUPS_BASE_URL
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsAPI
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GooglePostContentLoader
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
+import com.vandenbreemen.modernsimmingapp.di.hilt.GOOGLE_GROUPS_BASE_URL
 import com.vandenbreemen.modernsimmingapp.fetcher.FetchPostInteractor
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory

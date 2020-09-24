@@ -6,11 +6,12 @@ import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Core logic for fetching posts and storing them locally
  */
-class FetchPostInteractor(private val googleGroupsRepository: GoogleGroupsRepository, private val database: PostsDatabase) {
+class FetchPostInteractor @Inject constructor(private val googleGroupsRepository: GoogleGroupsRepository, private val database: PostsDatabase) {
 
     fun fetch(groupName: String, numPosts: Int): Boolean {
 

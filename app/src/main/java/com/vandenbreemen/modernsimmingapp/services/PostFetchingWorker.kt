@@ -7,6 +7,9 @@ import androidx.work.WorkerParameters
 import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.di.SimpleDI
+import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
+import com.vandenbreemen.modernsimmingapp.fetcher.FetchPostInteractor
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,9 +17,16 @@ import kotlinx.coroutines.withContext
 
 class PostFetchingWorker(private val context: Context, workerParameters: WorkerParameters): Worker(context, workerParameters) {
 
-    private val interactor = SimpleDI().getFetchPostInteractor(context)
+    lateinit var interactor: FetchPostInteractor
+
     private val postDatabase: PostsDatabase = SimpleDI().getPostsDatabase(context)
     private val broadcaster = Broadcaster(context)
+
+    val backendEntryPoint: BackendEntryPoint get() = EntryPointAccessors.fromApplication(context.applicationContext, BackendEntryPoint::class.java)
+
+    init {
+        interactor = backendEntryPoint.getFetchPostsInteractor()
+    }
 
     override fun doWork(): Result {
 
@@ -27,6 +37,7 @@ class PostFetchingWorker(private val context: Context, workerParameters: WorkerP
                 Log.i(javaClass.canonicalName, "Fetching posts for '${group.name}'")
                 withContext(Dispatchers.IO) {
                     if(interactor.fetch(group.name, 10)){
+                        Log.i(javaClass.canonicalName, "New posts arrived.  Sending broadcast")
                         broadcaster.sendBroadcastForNewPostInGroup(group.name)
                     }
                 }

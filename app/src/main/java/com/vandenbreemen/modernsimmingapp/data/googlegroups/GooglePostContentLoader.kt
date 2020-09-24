@@ -6,11 +6,12 @@ import org.jsoup.safety.Whitelist
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Helper:  Loads the content of a post based on its URL in the RSS feed
  */
-class GooglePostContentLoader {
+class GooglePostContentLoader @Inject constructor() {
 
     fun getPostBody(postUrl: String): String {
         val urlToLoad = "(/d/)".toRegex().replace(postUrl, "/forum/print/")

@@ -3,11 +3,12 @@ package com.vandenbreemen.modernsimmingapp.data.repository
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsAPI
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsPost
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GooglePostContentLoader
+import javax.inject.Inject
 
 /**
  *
  */
-class GoogleGroupsRepository(private val api: GoogleGroupsAPI, private val contentLoader: GooglePostContentLoader) {
+class GoogleGroupsRepository @Inject constructor (private val api: GoogleGroupsAPI, private val contentLoader: GooglePostContentLoader) {
 
     fun getSims(groupName: String, num: Int): List<GoogleGroupsPost>? {
         val call = api.getRssFeed(groupName, num)

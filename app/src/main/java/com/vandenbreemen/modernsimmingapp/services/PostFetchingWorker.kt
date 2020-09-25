@@ -6,7 +6,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
-import com.vandenbreemen.modernsimmingapp.di.SimpleDI
 import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
 import com.vandenbreemen.modernsimmingapp.fetcher.FetchPostInteractor
 import dagger.hilt.android.EntryPointAccessors
@@ -19,13 +18,16 @@ class PostFetchingWorker(private val context: Context, workerParameters: WorkerP
 
     lateinit var interactor: FetchPostInteractor
 
-    private val postDatabase: PostsDatabase = SimpleDI().getPostsDatabase(context)
-    private val broadcaster = Broadcaster(context)
+    lateinit var postDatabase: PostsDatabase
+
+    lateinit var broadcaster: Broadcaster
 
     val backendEntryPoint: BackendEntryPoint get() = EntryPointAccessors.fromApplication(context.applicationContext, BackendEntryPoint::class.java)
 
     init {
         interactor = backendEntryPoint.getFetchPostsInteractor()
+        postDatabase = backendEntryPoint.getPostsDatabase()
+        broadcaster = backendEntryPoint.getBroadcaster()
     }
 
     override fun doWork(): Result {

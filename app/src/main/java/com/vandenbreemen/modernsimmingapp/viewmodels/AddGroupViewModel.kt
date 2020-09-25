@@ -9,7 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.vandenbreemen.modernsimmingapp.data.localstorage.Group
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
-import com.vandenbreemen.modernsimmingapp.di.SimpleDI
+import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,9 +45,11 @@ class AddGroupViewModel(private val postsDatabase: PostsDatabase): ViewModel() {
 
 class AddGroupViewModelProvider(private val appContext: Context): ViewModelProvider.Factory {
 
+    val entryPoint: BackendEntryPoint get() = EntryPointAccessors.fromApplication(appContext.applicationContext, BackendEntryPoint::class.java)
+
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if(AddGroupViewModel::class.java.isAssignableFrom(modelClass)) {
-            return AddGroupViewModel(SimpleDI().getPostsDatabase(appContext.applicationContext)) as T
+            return AddGroupViewModel(entryPoint.getPostsDatabase()) as T
         }
 
         throw RuntimeException("Unsupported type $modelClass")

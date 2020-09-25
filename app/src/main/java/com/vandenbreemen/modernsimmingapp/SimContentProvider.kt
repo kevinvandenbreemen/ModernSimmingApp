@@ -9,16 +9,15 @@ import android.database.MatrixCursor
 import android.net.Uri
 import android.util.Log
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
-import com.vandenbreemen.modernsimmingapp.di.SimpleDI
+import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 
 class SimContentProvider : ContentProvider() {
 
-    private val postDatabase: PostsDatabase by lazy {
-        context?.let { c->
-            return@lazy SimpleDI().getPostsDatabase(c)
-        }
-        throw RuntimeException("Context unavailable.  Cannot provide this service!")
+    val backendEntryPoint: BackendEntryPoint get() = EntryPointAccessors.fromApplication(context!!, BackendEntryPoint::class.java)
 
+    private val postDatabase: PostsDatabase by lazy {
+        backendEntryPoint.getPostsDatabase()
     }
 
     companion object {

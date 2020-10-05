@@ -7,12 +7,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsPost
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import com.vandenbreemen.modernsimmingapp.services.PostFetchingWorker
+import com.vandenbreemen.modernsimmingapp.services.TextToSpeechWorker
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -120,5 +119,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun doTryDictation(view: View) {
+
+        val postId = 1
+        val workRequest = OneTimeWorkRequestBuilder<TextToSpeechWorker>().setInputData(
+            workDataOf(
+                TextToSpeechWorker.KEY_POST_IDS to arrayOf(postId)
+            )
+        ).build()
+
+        WorkManager.getInstance(this).enqueueUniqueWork(TextToSpeechWorker.WORK_NAME, ExistingWorkPolicy.REPLACE, workRequest)
     }
 }

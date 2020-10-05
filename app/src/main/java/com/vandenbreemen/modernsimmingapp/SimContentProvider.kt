@@ -14,7 +14,11 @@ import dagger.hilt.android.EntryPointAccessors
 
 class SimContentProvider : ContentProvider() {
 
-    val backendEntryPoint: BackendEntryPoint get() = EntryPointAccessors.fromApplication(context!!, BackendEntryPoint::class.java)
+    val backendEntryPoint: BackendEntryPoint
+        get() = EntryPointAccessors.fromApplication(
+            context!!,
+            BackendEntryPoint::class.java
+        )
 
     private val postDatabase: PostsDatabase by lazy {
         backendEntryPoint.getPostsDatabase()
@@ -32,6 +36,7 @@ class SimContentProvider : ContentProvider() {
     }
 
     private val uriMatcher = UriMatcher(NO_MATCH)
+
     init {
         uriMatcher.addURI(AUTHORITY, PATH_LIST_GROUPS, ID_LIST_GROUPS)
         uriMatcher.addURI(AUTHORITY, PATH_LIST_SIMS_IN_GRP, ID_LIST_SIMS_IN_GRP)
@@ -61,13 +66,13 @@ class SimContentProvider : ContentProvider() {
         selectionArgs: Array<String>?, sortOrder: String?
     ): Cursor? {
 
-        if(uriMatcher.match(uri) == ID_LIST_SIMS_IN_GRP) {
+        if (uriMatcher.match(uri) == ID_LIST_SIMS_IN_GRP) {
 
             Log.i(AUTHORITY, "LIST SIMS IN GROUP")
             val groupName = uri.pathSegments[1]
 
             var postCount = 10
-            uri.getQueryParameter("count")?.let { count->postCount = count.toInt() }
+            uri.getQueryParameter("count")?.let { count -> postCount = count.toInt() }
 
             postDatabase.groupDao().findGroupByName(groupName)?.let { group ->
 
@@ -77,15 +82,17 @@ class SimContentProvider : ContentProvider() {
 
                 Log.d(javaClass.simpleName, "Will provide posts [$rawPosts]")
 
-                val cursor = MatrixCursor(arrayOf(
-                    "postedDate",
-                    "title",
-                    "url",
-                    "content"
-                ))
+                val cursor = MatrixCursor(
+                    arrayOf(
+                        "postedDate",
+                        "title",
+                        "url",
+                        "content"
+                    )
+                )
 
-                rawPosts.forEach { post->
-                    postDatabase.postDao().loadContent(post.id)?.let { content->
+                rawPosts.forEach { post ->
+                    postDatabase.postDao().loadContent(post.id)?.let { content ->
                         cursor.newRow().apply {
                             add("postedDate", post.postedDate)
                             add("title", post.title)
@@ -99,10 +106,10 @@ class SimContentProvider : ContentProvider() {
 
             }
 
-        } else if(uriMatcher.match(uri) == ID_LIST_GROUPS) {
+        } else if (uriMatcher.match(uri) == ID_LIST_GROUPS) {
             val groups = postDatabase.groupDao().list()
             val cursor = MatrixCursor(arrayOf("name"))
-            groups.forEach { group->
+            groups.forEach { group ->
                 cursor.newRow().add(group.name)
             }
             return cursor

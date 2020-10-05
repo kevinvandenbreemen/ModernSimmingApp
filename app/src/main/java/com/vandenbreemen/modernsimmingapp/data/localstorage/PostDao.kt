@@ -50,4 +50,7 @@ abstract class PostDao {
     @Query("SELECT content FROM PostContent where postId = :postId")
     abstract fun loadContent(postId: Int): String?
 
+    @Query("SELECT * FROM Post where id = :postId")
+    abstract fun loadPost(postId: Int): Post?
+
 }

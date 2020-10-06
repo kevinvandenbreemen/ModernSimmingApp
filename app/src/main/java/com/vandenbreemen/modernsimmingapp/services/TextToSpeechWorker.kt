@@ -3,6 +3,7 @@ package com.vandenbreemen.modernsimmingapp.services
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostBean
 import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
 import com.vandenbreemen.modernsimmingapp.fetcher.PostManagementInteractor
@@ -20,6 +21,13 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
 
     private val interactor: TTSInteractor = backendEntryPoint.getTTSInteractor()
     private val postManagementInterface: PostManagementInteractor = backendEntryPoint.getPostManagementInteractor()
+    private val broadcaster = Broadcaster(context)
+
+    init {
+        interactor.currentUtteranceSeekerPublisher.subscribe { locationAndNumberOfUtterances->
+            broadcaster.sendBroadcastForCurrentTTSPosition(locationAndNumberOfUtterances.first, locationAndNumberOfUtterances.second)
+        }
+    }
 
     override fun doWork(): Result {
 

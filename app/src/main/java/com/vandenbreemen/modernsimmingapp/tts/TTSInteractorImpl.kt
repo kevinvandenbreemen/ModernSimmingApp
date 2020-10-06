@@ -8,10 +8,10 @@ import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostBean
 import com.vandenbreemen.modernsimmingapp.tts.PostParser
+import com.vandenbreemen.util.SimplePublisher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -43,6 +43,8 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
     val paused = AtomicBoolean(false)
 
     val canSpeak = AtomicBoolean(false)
+
+    override val currentUtteranceSeekerPublisher: SimplePublisher<Pair<Int, Int>> = SimplePublisher()
 
     init {
         tts = TextToSpeech(context, TextToSpeech.OnInitListener { status->
@@ -115,6 +117,7 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
                     return@launch
                 }
                 val nextIndex = indexOfCurrentStringBeingSpoken.incrementAndGet()
+                currentUtteranceSeekerPublisher.publish(Pair(nextIndex, stringsToSpeak!!.size))
 
                 Log.d(TAG, "Speaking\n${utterances[nextIndex]}")
                 tts.speak(utterances[nextIndex], QUEUE_FLUSH, null, UTTERANCE_ID)

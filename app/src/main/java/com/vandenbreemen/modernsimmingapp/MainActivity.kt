@@ -1,7 +1,10 @@
 package com.vandenbreemen.modernsimmingapp
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -14,6 +17,7 @@ import com.vandenbreemen.modernsimmingapp.services.PostFetchingWorker
 import com.vandenbreemen.modernsimmingapp.services.TextToSpeechWorker
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
@@ -51,6 +55,24 @@ class MainActivity : AppCompatActivity() {
         simContentProviderInteractor.postsLiveDate.observe(this, Observer { posts->
             Toast.makeText(this@MainActivity, posts.map { p->p.title }.toString(), Toast.LENGTH_LONG).show()
         })
+
+        setupSeekbarReceiver()
+    }
+
+    private fun setupSeekbarReceiver() {
+        val intentFilter = IntentFilter("${packageName}:TTSSeekPosition")
+        val receiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                val position = intent.getIntExtra("position", 0)
+                val totalStrings = intent.getIntExtra("totalStringsToSpeak", 0)
+
+                seekBar.max = totalStrings
+                seekBar.progress = position
+            }
+
+        }
+
+        registerReceiver(receiver, intentFilter)
     }
 
     fun testLoadingPost(view: View) {

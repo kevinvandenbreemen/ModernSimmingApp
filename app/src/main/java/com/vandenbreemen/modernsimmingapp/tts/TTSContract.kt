@@ -7,12 +7,12 @@ interface TTSInteractor {
 
     val currentUtteranceSeekerPublisher: SimplePublisher<Pair<Int, Int>>
 
-    fun speakSims(sims: List<PostBean>)
+    fun speakPosts(sims: List<PostBean>)
     fun pause()
     fun resume()
     fun isPaused(): Boolean
     fun seekTo(position: Int)
     fun close()
-    fun isInProcessOfSpeakingSims(): Boolean
+    fun isCurrentlyInUse(): Boolean
 
 }

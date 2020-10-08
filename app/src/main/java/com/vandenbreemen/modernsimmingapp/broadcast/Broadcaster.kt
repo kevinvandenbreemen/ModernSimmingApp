@@ -10,6 +10,7 @@ class Broadcaster(private val context: Context) {
         const val PARAM_GROUP_NAME = "groupName"
         const val PARAM_TTS_CURRENT_POSITION = "position"
         const val PARAM_TTS_TOTAL_STRINGS_TO_SPEAK = "totalStringsToSpeak"
+        const val TTS_SEEK_TO = "TTSSeekTo"
     }
 
     fun sendBroadcastForNewPostInGroup(groupName: String) {

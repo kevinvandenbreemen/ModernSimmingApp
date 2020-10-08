@@ -38,7 +38,7 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
 
     val shouldExitNow = AtomicBoolean(false)
 
-    val isInTheProcessOfSpeakingSims = AtomicBoolean(false)
+    val isCurrentlyInUse = AtomicBoolean(false)
 
     val paused = AtomicBoolean(false)
 
@@ -84,7 +84,7 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
         }
     }
 
-    override fun speakSims(sims: List<PostBean>) {
+    override fun speakPosts(sims: List<PostBean>) {
 
         val utterances = mutableListOf<String>()
         var index = 0
@@ -100,15 +100,13 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
         }
         stringsToSpeak = listOf(*utterances.toTypedArray())
 
-
-
         CoroutineScope(Dispatchers.Default).launch {
 
             while(!canSpeak.get()) {
                 Thread.sleep(10)
             }
 
-            isInTheProcessOfSpeakingSims.set(true)
+            isCurrentlyInUse.set(true)
 
             while (hasMoreStrings()) {
                 waitForTTSCompletion()
@@ -128,15 +126,19 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
             waitForTTSCompletion()
             indexOfCurrentStringBeingSpoken.set(-1)
 
-            isInTheProcessOfSpeakingSims.set(false)
+            isCurrentlyInUse.set(false)
         }
 
 
 
     }
 
-    override fun isInProcessOfSpeakingSims(): Boolean {
-        return isInTheProcessOfSpeakingSims.get()
+    /**
+     * Indicates that the interactor is currently being used (regardless of whether it has been paused etc).  This will
+     * become true the moment speakPosts() is called
+     */
+    override fun isCurrentlyInUse(): Boolean {
+        return isCurrentlyInUse.get()
     }
 
     private fun doPause(): Boolean {

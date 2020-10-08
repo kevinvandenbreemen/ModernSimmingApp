@@ -6,11 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.work.*
+import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.data.googlegroups.GoogleGroupsPost
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import com.vandenbreemen.modernsimmingapp.services.PostFetchingWorker
@@ -54,6 +57,26 @@ class MainActivity : AppCompatActivity() {
 
         simContentProviderInteractor.postsLiveDate.observe(this, Observer { posts->
             Toast.makeText(this@MainActivity, posts.map { p->p.title }.toString(), Toast.LENGTH_LONG).show()
+        })
+
+        seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if(fromUser) {
+                    val broadcast = Intent("${applicationContext.packageName}:${Broadcaster.TTS_SEEK_TO}")
+                    broadcast.putExtra(Broadcaster.PARAM_TTS_CURRENT_POSITION, progress)
+                    Log.i("KEVIN", "Sending broadcast to seek to $progress, intent action = ${broadcast.action}")
+                    sendBroadcast(broadcast)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                //  Un-needed
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                //  Un-needed
+            }
+
         })
 
         setupSeekbarReceiver()

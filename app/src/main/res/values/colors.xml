@@ -3,4 +3,10 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="selectableColor">#000000</color>
+    <color name="dividerColor">#0F0F0F</color>
+    <color name="itemSelectBackground">#F1F1F1</color>
+    <color name="itemSelectRipple">#A1A1A1</color>
+
 </resources>

@@ -19,7 +19,7 @@ private class GroupAdapter(private val groupNames: List<String>): RecyclerView.A
     val selectionLiveData = MutableLiveData<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
-        return GroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.simple_text_view, parent, false))
+        return GroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_group_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -28,8 +28,11 @@ private class GroupAdapter(private val groupNames: List<String>): RecyclerView.A
 
     override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
         val groupName = groupNames[position]
-        (holder.itemView as? TextView)?.apply {
-            text = groupName
+        (holder.itemView as? ViewGroup)?.apply {
+            findViewById<TextView>(R.id.groupName)?.apply {
+                text = groupName
+            }
+
             setOnClickListener { _->
                 selectionLiveData.postValue(groupName)
             }

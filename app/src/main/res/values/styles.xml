@@ -7,4 +7,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="item_select_item_name" >
+        <item name="android:textSize" >18sp</item>
+        <item name="android:textColor">@color/selectableColor</item>
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontWeight">900</item>
+    </style>
+
 </resources>

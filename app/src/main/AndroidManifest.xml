@@ -14,15 +14,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityGroupSelect"></activity>
+        <activity android:name=".activities.FunctionalityTestingActivity"
+            android:configChanges="orientation"
+            />
+        <activity android:name=".ActivityGroupSelect" />
         <activity android:name=".ActivityAddGroup" />
 
         <provider
             android:name=".SimContentProvider"
             android:authorities="com.vandenbreemen.modernsimmingapp.SimContentProvider"
-            android:readPermission="com.vandenbreemen.modernsimming.READ"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:readPermission="com.vandenbreemen.modernsimming.READ" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

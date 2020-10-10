@@ -7,86 +7,15 @@
     tools:viewBindingIgnore="true"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="testLoadingPost"
-        android:text="@string/test_load_post"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     <Button
-        android:id="@+id/button2"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:id="@+id/testFunctionality"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/test_load_group"
-        android:onClick="testLoadingGroup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/testContentProvider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="doTestContentProvider"
-        android:text="@string/test_content_provider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="testWorkRequest"
-        android:text="@string/test_worker"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button5" />
-
-    <Button
-        android:id="@+id/button4"
-        android:onClick="addGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_get_post_titles"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:onClick="testLoadingPosts"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testContentProvider" />
-
-    <Button
-        android:id="@+id/tryDictating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_dictation"
-        android:onClick="doTryDictation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:text="@string/test_functionality"
+        android:onClick="testAppFunctionality"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

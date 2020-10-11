@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.vandenbreemen.modernsimmingapp.activities.FunctionalityTestingActivity
+import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
 import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +17,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        const val ONBOARDING_DIALOG_ID = "__onboardingFrag"
+    }
 
     private val onboardingViewModel: OnboardingViewModel by viewModels<OnboardingViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
 
@@ -29,11 +34,20 @@ class MainActivity : AppCompatActivity() {
 
         //  Set up view model stuff
         onboardingViewModel.promptForGroupNameLiveData.observe(this, Observer {
+            val onboardingDialog = OnboardingFragment()
+            onboardingDialog.show(supportFragmentManager, ONBOARDING_DIALOG_ID)
+        })
 
-
+        onboardingViewModel.groupNameAddedLiveData.observe(this, Observer {
 
         })
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        onboardingViewModel.start()
     }
 
     fun testAppFunctionality(view: View) {

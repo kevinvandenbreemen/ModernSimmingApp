@@ -34,6 +34,11 @@ class MainActivity : AppCompatActivity() {
 
         //  Set up view model stuff
         onboardingViewModel.promptForGroupNameLiveData.observe(this, Observer {
+
+            if(supportFragmentManager.findFragmentByTag(ONBOARDING_DIALOG_ID) != null) {
+                return@Observer
+            }
+
             val onboardingDialog = OnboardingFragment()
             onboardingDialog.show(supportFragmentManager, ONBOARDING_DIALOG_ID)
         })

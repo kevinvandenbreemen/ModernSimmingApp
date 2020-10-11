@@ -2,6 +2,7 @@ package com.vandenbreemen.modernsimmingapp.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 
@@ -13,10 +14,12 @@ class OnboardingViewModel(private val simContentProviderInteractor: SimContentPr
     private val groupNameAdded: MutableLiveData<Unit> = MutableLiveData()
     val groupNameAddedLiveData: LiveData<Unit> get() = groupNameAdded
 
+    private val groupAddObserver = Observer<Unit> {
+        groupNameAdded.postValue(Unit)
+    }
+
     init {
-        addGroupViewModel.successLiveData.observeForever {
-            groupNameAdded.postValue(Unit)
-        }
+        addGroupViewModel.successLiveData.observeForever(groupAddObserver)
     }
 
     /**
@@ -32,6 +35,10 @@ class OnboardingViewModel(private val simContentProviderInteractor: SimContentPr
 
     fun addNewGroup(groupName: String) {
         addGroupViewModel.addGroup(groupName)
+    }
+
+    override fun onCleared() {
+        addGroupViewModel.successLiveData.removeObserver(groupAddObserver)
     }
 
 }

@@ -5,6 +5,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/titleColor</item>
+        <item name="buttonStyle">@style/custom_button</item>
+        <item name="background">@color/black</item>
     </style>
 
     <style name="item_select_item_name" >
@@ -12,6 +15,27 @@
         <item name="android:textColor">@color/selectableColor</item>
         <item name="android:fontStyle">normal</item>
         <item name="android:fontWeight">900</item>
+    </style>
+
+    <style name="title_main" >
+        <item name="android:textSize" >18sp</item>
+        <item name="android:textColor">@color/titleColor</item>
+    </style>
+
+    <style name="custom_button" parent="AppTheme" >
+        <item name="android:textColor">@color/selectableColor</item>
+        <item name="android:background">@drawable/custom_button_background</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="elevation">4dp</item>
+    </style>
+
+    <style name="text_input" >
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHint">@color/itemSelectRipple</item>
+        <item name="android:textColor">@color/colorAccent</item>
+
     </style>
 
 </resources>

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.FunctionalityTestingActivity">
@@ -10,6 +11,7 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:onClick="testLoadingPost"
         android:text="@string/test_load_post"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,6 +32,7 @@
         android:id="@+id/testContentProvider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:onClick="doTestContentProvider"
         android:text="@string/test_content_provider"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +43,7 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:onClick="testWorkRequest"
         android:text="@string/test_worker"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,9 +52,10 @@
 
     <Button
         android:id="@+id/button4"
-        android:onClick="addGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="addGroup"
         android:text="@string/add_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,9 +65,10 @@
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="testLoadingPosts"
         android:text="@string/test_get_post_titles"
         app:layout_constraintEnd_toEndOf="parent"
-        android:onClick="testLoadingPosts"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/testContentProvider" />
 
@@ -70,8 +76,9 @@
         android:id="@+id/tryDictating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/test_dictation"
+        android:layout_marginTop="8dp"
         android:onClick="doTryDictation"
+        android:text="@string/test_dictation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />

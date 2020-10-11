@@ -3,13 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    tools:showIn="@layout/fragment_onboarding"
+    android:layout_height="wrap_content"
     tools:context=".ActivityAddGroup">
 
     <EditText
         android:id="@+id/editTextTextPersonName"
+        style="@style/text_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="@string/group_name"
         android:inputType="textPersonName"
@@ -20,10 +23,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        style="@style/custom_button"
         android:id="@+id/submitGroupName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
+        android:text="@string/add_group_button"
         app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

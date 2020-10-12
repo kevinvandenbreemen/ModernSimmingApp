@@ -13,7 +13,7 @@ class OverviewViewModel(private val simContentProviderInteractor: SimContentProv
     val selectedGroupLiveData: LiveData<String> get() = selectedGroup
 
     private val groupList: MutableLiveData<List<String>> = MutableLiveData()
-    val groupListLiveData: LiveData<List<String>> get() = groupList
+    val groupListMenuLiveData: LiveData<List<String>> get() = groupList
 
     private val openMenu: MutableLiveData<Unit> = MutableLiveData()
     val openMenuLiveData: LiveData<Unit> get() = openMenu
@@ -28,6 +28,11 @@ class OverviewViewModel(private val simContentProviderInteractor: SimContentProv
         } else {
             closeMenu.postValue(Unit)
         }
+    }
+
+    fun closeMainMenu() {
+        mainMenuOpen = false
+        closeMenu.postValue(Unit)
     }
 
     fun openGroupListMenu() {

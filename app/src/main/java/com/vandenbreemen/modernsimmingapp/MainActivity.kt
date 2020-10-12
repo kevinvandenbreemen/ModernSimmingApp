@@ -13,6 +13,7 @@ import com.vandenbreemen.modernsimmingapp.activities.FunctionalityTestingActivit
 import com.vandenbreemen.modernsimmingapp.animation.OnAnimationEndListener
 import com.vandenbreemen.modernsimmingapp.databinding.ActivityMainBinding
 import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
+import com.vandenbreemen.modernsimmingapp.fragments.SelectGroupDialogFragment
 import com.vandenbreemen.modernsimmingapp.services.ServicesInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val ONBOARDING_DIALOG_ID = "__onboardingFrag"
+        const val SELECT_GROUP_ID = "__selectGrpFrag"
     }
 
     private val onboardingViewModel: OnboardingViewModel by viewModels<OnboardingViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
@@ -66,6 +68,29 @@ class MainActivity : AppCompatActivity() {
             servicesInteractor.ensurePostFetchRunning()
         })
 
+        overviewViewModel.groupListMenuLiveData.observe(this, Observer { groupNames->
+
+            val fragment = SelectGroupDialogFragment(groupNames)
+            fragment.selectedGroupLiveData.observe(this, Observer { groupName->
+                postListViewModel.updateGroupName(groupName)
+            })
+            fragment.show(supportFragmentManager, SELECT_GROUP_ID)
+
+        })
+
+        setupMenuBehaviour()
+
+    }
+
+    private fun setupMenuBehaviour() {
+
+        binding.run {
+            selectGroup.setOnClickListener { _->
+                overviewViewModel.openGroupListMenu()
+                overviewViewModel.closeMainMenu()
+            }
+        }
+
         overviewViewModel.openMenuLiveData.observe(this, Observer {
 
             binding.run {
@@ -93,14 +118,14 @@ class MainActivity : AppCompatActivity() {
                 addGroupButton.animate()
                     .alpha(0.0f)
                     .translationYBy(20f)
-                    .setListener(object: OnAnimationEndListener() {
+                    .setListener(object : OnAnimationEndListener() {
                         override fun onAnimationEnd(animation: Animator?) {
                             addGroupButton.run {
                                 visibility = GONE
                                 animate().setListener(null)
                             }
                         }
-                }).duration = 100
+                    }).duration = 100
 
                 selectGroup.apply {
                     animate()
@@ -117,7 +142,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     override fun onResume() {

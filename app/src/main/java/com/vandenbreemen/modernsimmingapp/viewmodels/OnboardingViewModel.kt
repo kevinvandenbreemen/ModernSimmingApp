@@ -14,6 +14,9 @@ class OnboardingViewModel(private val simContentProviderInteractor: SimContentPr
     private val groupNameAdded: MutableLiveData<Unit> = MutableLiveData()
     val groupNameAddedLiveData: LiveData<Unit> get() = groupNameAdded
 
+    private val onboardingNotNeeded: MutableLiveData<Unit> = MutableLiveData()
+    val onboardingNotNeededLiveData: LiveData<Unit> get() = onboardingNotNeeded
+
     private val groupAddObserver = Observer<Unit> {
         groupNameAdded.postValue(Unit)
     }
@@ -29,6 +32,8 @@ class OnboardingViewModel(private val simContentProviderInteractor: SimContentPr
         simContentProviderInteractor.fetchGroupNames{names->
             if(names.isEmpty()) {
                 promptForGroupName.postValue(Unit)
+            } else {
+                onboardingNotNeeded.postValue(Unit)
             }
         }
     }

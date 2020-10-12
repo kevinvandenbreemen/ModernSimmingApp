@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.vandenbreemen.modernsimmingapp.activities.FunctionalityTestingActivity
 import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
+import com.vandenbreemen.modernsimmingapp.services.ServicesInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -23,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val onboardingViewModel: OnboardingViewModel by viewModels<OnboardingViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
+
+    @Inject lateinit var servicesInteractor: ServicesInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +48,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         onboardingViewModel.groupNameAddedLiveData.observe(this, Observer {
+            servicesInteractor.ensurePostFetchRunning()
+        })
 
+        onboardingViewModel.onboardingNotNeededLiveData.observe(this, Observer {
+            servicesInteractor.ensurePostFetchRunning()
         })
 
     }

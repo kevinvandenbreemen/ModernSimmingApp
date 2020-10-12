@@ -27,6 +27,9 @@ class ModernSimmingViewModelFactory(private val frontEndEntryPoint: FrontEndEntr
         if(modelClass.isAssignableFrom(OverviewViewModel::class.java)) {
             return frontEndEntryPoint.getOverviewViewModel() as T
         }
+        if(modelClass.isAssignableFrom(PostListViewModel::class.java)) {
+            return frontEndEntryPoint.getPostListViewModel() as T
+        }
 
         throw IllegalArgumentException("Type $modelClass not supported")
     }

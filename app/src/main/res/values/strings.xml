@@ -13,4 +13,5 @@
     <string name="onboarding_select_group_name">Let\'s set you up with a group to view posts in</string>
     <string name="add_group_button">Add New Group</string>
     <string name="actions">Actions</string>
+    <string name="select_group">Open Group</string>
 </resources>

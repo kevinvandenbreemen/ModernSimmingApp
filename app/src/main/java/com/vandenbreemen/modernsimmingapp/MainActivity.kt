@@ -17,6 +17,7 @@ import com.vandenbreemen.modernsimmingapp.services.ServicesInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.OverviewViewModel
+import com.vandenbreemen.modernsimmingapp.viewmodels.PostListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private val onboardingViewModel: OnboardingViewModel by viewModels<OnboardingViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
     private val overviewViewModel: OverviewViewModel by viewModels<OverviewViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
+    private val postListViewModel: PostListViewModel by viewModels<PostListViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
 
     @Inject lateinit var servicesInteractor: ServicesInteractor
 
@@ -73,6 +75,15 @@ class MainActivity : AppCompatActivity() {
                     .alpha(1.0f)
                     .translationYBy(-20f)
                     .duration = 100
+
+                selectGroup.apply {
+                    alpha = 0.0f
+                    visibility = VISIBLE
+                    animate()
+                        .alpha(1.0f)
+                        .translationYBy(-20f)
+                        .duration = 100
+                }
             }
 
         })
@@ -90,6 +101,20 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                 }).duration = 100
+
+                selectGroup.apply {
+                    animate()
+                        .alpha(0.0f)
+                        .translationYBy(20f)
+                        .setListener(object : OnAnimationEndListener() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                selectGroup.run {
+                                    visibility = GONE
+                                    animate().setListener(null)
+                                }
+                            }
+                        }).duration = 100
+                }
             }
         })
 

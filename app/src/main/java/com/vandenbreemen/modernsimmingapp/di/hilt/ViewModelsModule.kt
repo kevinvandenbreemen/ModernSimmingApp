@@ -5,6 +5,7 @@ import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteracto
 import com.vandenbreemen.modernsimmingapp.viewmodels.AddGroupViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.OverviewViewModel
+import com.vandenbreemen.modernsimmingapp.viewmodels.PostListViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,8 +26,13 @@ class ViewModelsModule {
     }
 
     @Provides
-    fun providesOverviewViewModel(): OverviewViewModel {
-        return OverviewViewModel()
+    fun providesOverviewViewModel(simContentProviderInteractor: SimContentProviderInteractor): OverviewViewModel {
+        return OverviewViewModel(simContentProviderInteractor)
+    }
+
+    @Provides
+    fun providesPostListViewModel(simContentProviderInteractor: SimContentProviderInteractor): PostListViewModel {
+        return PostListViewModel(simContentProviderInteractor)
     }
 
 }

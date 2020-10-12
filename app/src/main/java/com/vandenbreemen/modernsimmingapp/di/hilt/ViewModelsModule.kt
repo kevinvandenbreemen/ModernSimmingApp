@@ -4,6 +4,7 @@ import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.AddGroupViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
+import com.vandenbreemen.modernsimmingapp.viewmodels.OverviewViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +22,11 @@ class ViewModelsModule {
     @Provides
     fun providesAddGroupViewModel(postsDatabase: PostsDatabase): AddGroupViewModel {
         return AddGroupViewModel(postsDatabase)
+    }
+
+    @Provides
+    fun providesOverviewViewModel(): OverviewViewModel {
+        return OverviewViewModel()
     }
 
 }

@@ -27,4 +27,10 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
         simContentProviderInteractor.fetchGroupPosts(this.groupName, 30)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+
+        simContentProviderInteractor.postsLiveDate.removeObserver(postsObserver)
+    }
+
 }

@@ -14,4 +14,5 @@
     <string name="add_group_button">Add New Group</string>
     <string name="actions">Actions</string>
     <string name="select_group">Open Group</string>
+    <string name="please_select_group">Please select a Group to view Posts in</string>
 </resources>

@@ -13,6 +13,7 @@ import com.vandenbreemen.modernsimmingapp.activities.FunctionalityTestingActivit
 import com.vandenbreemen.modernsimmingapp.animation.OnAnimationEndListener
 import com.vandenbreemen.modernsimmingapp.databinding.ActivityMainBinding
 import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
+import com.vandenbreemen.modernsimmingapp.fragments.PostListFragment
 import com.vandenbreemen.modernsimmingapp.fragments.SelectGroupDialogFragment
 import com.vandenbreemen.modernsimmingapp.services.ServicesInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
@@ -49,10 +50,34 @@ class MainActivity : AppCompatActivity() {
             binding.testFunctionality.visibility = VISIBLE
         }
 
+        val postListFragment = PostListFragment()
+        supportFragmentManager.beginTransaction().add(R.id.mainContentSection, postListFragment).commit()
+
         //  Set up view model stuff
+        setupOnboardingViewModel()
+
+        setupOverviewViewModel()
+
+        setupMenuBehaviour()
+
+    }
+
+    private fun setupOverviewViewModel() {
+        overviewViewModel.groupListMenuLiveData.observe(this, Observer { groupNames ->
+
+            val fragment = SelectGroupDialogFragment(groupNames)
+            fragment.selectedGroupLiveData.observe(this, Observer { groupName ->
+                postListViewModel.updateGroupName(groupName)
+            })
+            fragment.show(supportFragmentManager, SELECT_GROUP_ID)
+
+        })
+    }
+
+    private fun setupOnboardingViewModel() {
         onboardingViewModel.promptForGroupNameLiveData.observe(this, Observer {
 
-            if(supportFragmentManager.findFragmentByTag(ONBOARDING_DIALOG_ID) != null) {
+            if (supportFragmentManager.findFragmentByTag(ONBOARDING_DIALOG_ID) != null) {
                 return@Observer
             }
 
@@ -67,19 +92,6 @@ class MainActivity : AppCompatActivity() {
         onboardingViewModel.onboardingNotNeededLiveData.observe(this, Observer {
             servicesInteractor.ensurePostFetchRunning()
         })
-
-        overviewViewModel.groupListMenuLiveData.observe(this, Observer { groupNames->
-
-            val fragment = SelectGroupDialogFragment(groupNames)
-            fragment.selectedGroupLiveData.observe(this, Observer { groupName->
-                postListViewModel.updateGroupName(groupName)
-            })
-            fragment.show(supportFragmentManager, SELECT_GROUP_ID)
-
-        })
-
-        setupMenuBehaviour()
-
     }
 
     private fun setupMenuBehaviour() {

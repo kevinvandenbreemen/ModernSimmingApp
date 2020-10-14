@@ -1,5 +1,7 @@
 package com.vandenbreemen.modernsimmingapp.fragments
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +45,6 @@ class GroupViewHolder(view: View): RecyclerView.ViewHolder(view)
 class SelectGroupDialogFragment(private val groupNames: List<String>): DialogFragment() {
 
     private lateinit var binding: LayoutSelectGroupBinding
-    private lateinit var adapter: GroupAdapter
 
     private val selectedGroup = MutableLiveData<String>()
     val selectedGroupLiveData: LiveData<String> get() = selectedGroup
@@ -65,6 +66,10 @@ class SelectGroupDialogFragment(private val groupNames: List<String>): DialogFra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dialog?.apply {
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
 
         binding.groupSelectRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)

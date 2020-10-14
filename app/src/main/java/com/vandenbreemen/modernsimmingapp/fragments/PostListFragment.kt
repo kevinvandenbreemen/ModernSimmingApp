@@ -12,7 +12,9 @@ import com.vandenbreemen.modernsimmingapp.databinding.LayoutPostListBinding
 import com.vandenbreemen.modernsimmingapp.uicommon.PostListRecyclerViewAdapter
 import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
 import com.vandenbreemen.modernsimmingapp.viewmodels.PostListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostListFragment: Fragment() {
 
     private val viewModel: PostListViewModel by activityViewModels<PostListViewModel> { ModernSimmingViewModelFactory.fromFragment(this) }
@@ -48,6 +50,7 @@ class PostListFragment: Fragment() {
 
         viewModel.postListLiveData.observe(viewLifecycleOwner, Observer { postViews->
             adapter.setData(postViews)
+            adapter.notifyDataSetChanged()
         })
 
     }

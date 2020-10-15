@@ -26,7 +26,7 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
                 return
             }
 
-            Log.d(javaClass.simpleName, "Fetching new list of posts for ${this@PostListViewModel.groupName}")
+            Log.d(PostListViewModel::class.java.simpleName, "Fetching new list of posts for ${this@PostListViewModel.groupName}")
             intent.getStringExtra(ModernSimmingBroadcasting.PARAM_GROUP_NAME)?.let { groupName ->
                 if(groupName == this@PostListViewModel.groupName) {
                     simContentProviderInteractor.fetchGroupPosts(groupName, 30)

@@ -84,6 +84,7 @@ class SimContentProvider : ContentProvider() {
 
                 val cursor = MatrixCursor(
                     arrayOf(
+                        "id",
                         "postedDate",
                         "title",
                         "url",
@@ -94,6 +95,7 @@ class SimContentProvider : ContentProvider() {
                 rawPosts.forEach { post ->
                     postDatabase.postDao().loadContent(post.id)?.let { content ->
                         cursor.newRow().apply {
+                            add("id", post.id)
                             add("postedDate", post.postedDate)
                             add("title", post.title)
                             add("url", post.url)

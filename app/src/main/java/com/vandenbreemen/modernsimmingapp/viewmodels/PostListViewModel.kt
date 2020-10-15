@@ -9,11 +9,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
 import com.vandenbreemen.modernsimmingapp.subscriber.PostView
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import com.vandenbreemen.modernsimmingcontentsubscriber.ModernSimmingBroadcasting
 
-class PostListViewModel(private val simContentProviderInteractor: SimContentProviderInteractor, private val context: Context): ViewModel() {
+class PostListViewModel(private val simContentProviderInteractor: SimContentProviderInteractor,
+                        private val configInteractor: ConfigInteractor,
+                        private val context: Context): ViewModel() {
 
     private val postsObserver: Observer<List<PostView>> = Observer { posts->
         postList.postValue(posts)
@@ -41,6 +44,10 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
 
         val newPostsFilter = IntentFilter("${context.applicationContext.packageName}:NewPosts")
         context.registerReceiver(groupUpdatesReceiver, newPostsFilter)
+
+        configInteractor.getSelectedGroup()?.let { selectedGroup ->
+            doUpdateGroupName(selectedGroup)
+        }
     }
 
     private val postList: MutableLiveData<List<PostView>> = MutableLiveData()
@@ -49,6 +56,11 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
     private lateinit var groupName: String
 
     fun updateGroupName(groupName: String) {
+        configInteractor.setSelectedGroup(groupName)
+        doUpdateGroupName(groupName)
+    }
+
+    private fun doUpdateGroupName(groupName: String) {
         this.groupName = groupName
         simContentProviderInteractor.fetchGroupPosts(this.groupName, 30)
     }

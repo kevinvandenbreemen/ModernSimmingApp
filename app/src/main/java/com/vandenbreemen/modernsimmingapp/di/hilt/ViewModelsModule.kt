@@ -1,6 +1,7 @@
 package com.vandenbreemen.modernsimmingapp.di.hilt
 
 import android.content.Context
+import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.AddGroupViewModel
@@ -33,8 +34,8 @@ class ViewModelsModule {
     }
 
     @Provides
-    fun providesPostListViewModel(simContentProviderInteractor: SimContentProviderInteractor, @ActivityContext context: Context): PostListViewModel {
-        return PostListViewModel(simContentProviderInteractor, context)
+    fun providesPostListViewModel(simContentProviderInteractor: SimContentProviderInteractor, @ActivityContext context: Context, configInteractor: ConfigInteractor): PostListViewModel {
+        return PostListViewModel(simContentProviderInteractor, configInteractor, context)
     }
 
 }

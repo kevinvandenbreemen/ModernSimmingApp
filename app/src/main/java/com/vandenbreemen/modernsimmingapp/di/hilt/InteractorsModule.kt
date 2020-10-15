@@ -1,6 +1,7 @@
 package com.vandenbreemen.modernsimmingapp.di.hilt
 
 import android.content.Context
+import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import com.vandenbreemen.modernsimmingapp.fetcher.FetchPostInteractor
@@ -45,6 +46,11 @@ class InteractorsModule {
     @Provides
     fun providesServicesInteractor(@ApplicationContext context: Context): ServicesInteractor {
         return ServicesInteractor(context)
+    }
+
+    @Provides
+    fun providesConfigInteractor(@ApplicationContext context: Context): ConfigInteractor {
+        return ConfigInteractor(context)
     }
 
 }

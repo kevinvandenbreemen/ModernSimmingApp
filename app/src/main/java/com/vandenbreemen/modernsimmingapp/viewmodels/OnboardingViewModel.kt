@@ -11,14 +11,14 @@ class OnboardingViewModel(private val simContentProviderInteractor: SimContentPr
     private val promptForGroupName: MutableLiveData<Unit> = MutableLiveData()
     val promptForGroupNameLiveData: LiveData<Unit> get() = promptForGroupName
 
-    private val groupNameAdded: MutableLiveData<Unit> = MutableLiveData()
-    val groupNameAddedLiveData: LiveData<Unit> get() = groupNameAdded
+    private val groupNameAdded: MutableLiveData<String> = MutableLiveData()
+    val groupNameAddedLiveData: LiveData<String> get() = groupNameAdded
 
     private val onboardingNotNeeded: MutableLiveData<Unit> = MutableLiveData()
     val onboardingNotNeededLiveData: LiveData<Unit> get() = onboardingNotNeeded
 
-    private val groupAddObserver = Observer<Unit> {
-        groupNameAdded.postValue(Unit)
+    private val groupAddObserver = Observer<String> {
+        groupNameAdded.postValue(it)
     }
 
     init {

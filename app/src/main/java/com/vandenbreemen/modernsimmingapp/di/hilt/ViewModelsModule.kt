@@ -1,5 +1,6 @@
 package com.vandenbreemen.modernsimmingapp.di.hilt
 
+import android.content.Context
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.AddGroupViewModel
@@ -10,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.qualifiers.ActivityContext
 
 @Module
 @InstallIn(ActivityComponent::class)
@@ -31,8 +33,8 @@ class ViewModelsModule {
     }
 
     @Provides
-    fun providesPostListViewModel(simContentProviderInteractor: SimContentProviderInteractor): PostListViewModel {
-        return PostListViewModel(simContentProviderInteractor)
+    fun providesPostListViewModel(simContentProviderInteractor: SimContentProviderInteractor, @ActivityContext context: Context): PostListViewModel {
+        return PostListViewModel(simContentProviderInteractor, context)
     }
 
 }

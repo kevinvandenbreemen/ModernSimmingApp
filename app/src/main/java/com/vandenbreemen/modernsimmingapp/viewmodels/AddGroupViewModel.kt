@@ -20,14 +20,14 @@ class AddGroupViewModel(private val postsDatabase: PostsDatabase): ViewModel() {
     private val mutableError = MutableLiveData<String>()
     val errorLiveData: LiveData<String> get() = mutableError
 
-    private val mutableSuccess = MutableLiveData<Unit>()
-    val successLiveData: LiveData<Unit> get() = mutableSuccess
+    private val mutableSuccess = MutableLiveData<String>()
+    val successLiveData: LiveData<String> get() = mutableSuccess
 
     fun addGroup(groupName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 tryAddGroup(groupName)
-                mutableSuccess.postValue(Unit)
+                mutableSuccess.postValue(groupName)
             } catch (exc: SQLiteConstraintException) {
                 Log.e(javaClass.simpleName, "Could not add group since it already exists", exc)
                 mutableError.postValue("Group '$groupName' already defined")

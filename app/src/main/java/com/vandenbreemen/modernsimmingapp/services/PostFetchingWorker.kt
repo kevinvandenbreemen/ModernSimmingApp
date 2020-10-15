@@ -40,7 +40,7 @@ class PostFetchingWorker(private val context: Context, workerParameters: WorkerP
                 withContext(Dispatchers.IO) {
                     if(interactor.fetch(group.name, 10)){
                         Log.i(javaClass.canonicalName, "New posts arrived.  Sending broadcast")
-                        broadcaster.sendBroadcastForNewPostInGroup(group.name)
+                        broadcaster.sendBroadcastForNewContentInGroup(group.name)
                     }
                 }
             }

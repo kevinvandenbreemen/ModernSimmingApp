@@ -85,8 +85,11 @@ class MainActivity : AppCompatActivity() {
             onboardingDialog.show(supportFragmentManager, ONBOARDING_DIALOG_ID)
         })
 
-        onboardingViewModel.groupNameAddedLiveData.observe(this, Observer {
+        onboardingViewModel.groupNameAddedLiveData.observe(this, Observer {groupName ->
             servicesInteractor.ensurePostFetchRunning()
+
+            postListViewModel.updateGroupName(groupName)
+
         })
 
         onboardingViewModel.onboardingNotNeededLiveData.observe(this, Observer {

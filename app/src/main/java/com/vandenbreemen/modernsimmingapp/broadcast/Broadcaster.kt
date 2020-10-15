@@ -14,7 +14,7 @@ class Broadcaster(private val context: Context) {
         const val TTS_SEEK_TO = ModernSimmingBroadcasting.TTS_SEEK_TO
     }
 
-    fun sendBroadcastForNewPostInGroup(groupName: String) {
+    fun sendBroadcastForNewContentInGroup(groupName: String) {
         val intent = Intent("${context.applicationContext.packageName}:NewPosts")
         intent.putExtra(PARAM_GROUP_NAME, groupName)
         context.sendBroadcast(intent)

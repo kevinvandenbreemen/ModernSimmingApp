@@ -62,7 +62,7 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
                     }
 
                     override fun onError(utteranceId: String?) {
-
+                        Log.e(TTSInteractorImpl::class.java.simpleName, "Could not speak utterance $utteranceId")
                     }
 
                     override fun onStart(utteranceId: String?) {

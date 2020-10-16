@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vandenbreemen.modernsimmingapp.databinding.LayoutPostItemBinding
 import com.vandenbreemen.modernsimmingapp.subscriber.PostView
 
-class PostListRecyclerViewAdapter(): RecyclerView.Adapter<PostListViewHolder>() {
+class PostListRecyclerViewAdapter(private val itemSelectCallback: ((post: PostView) -> Unit)? = null): RecyclerView.Adapter<PostListViewHolder>() {
 
     private var data: List<PostView> = emptyList()
     fun setData(data: List<PostView>) {
@@ -19,9 +19,19 @@ class PostListRecyclerViewAdapter(): RecyclerView.Adapter<PostListViewHolder>() 
         )
     }
 
+    override fun onViewRecycled(holder: PostListViewHolder) {
+        super.onViewRecycled(holder)
+        holder.binding.root.setOnClickListener(null)
+    }
+
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
         val post = data[position]
         holder.binding.postTitle.text = post.title
+        itemSelectCallback?.let { callback->
+            holder.binding.root.setOnClickListener {
+                callback(post)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

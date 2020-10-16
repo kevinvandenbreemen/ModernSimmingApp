@@ -16,10 +16,7 @@ import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
 import com.vandenbreemen.modernsimmingapp.fragments.PostListFragment
 import com.vandenbreemen.modernsimmingapp.fragments.SelectGroupDialogFragment
 import com.vandenbreemen.modernsimmingapp.services.ServicesInteractor
-import com.vandenbreemen.modernsimmingapp.viewmodels.ModernSimmingViewModelFactory
-import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
-import com.vandenbreemen.modernsimmingapp.viewmodels.OverviewViewModel
-import com.vandenbreemen.modernsimmingapp.viewmodels.PostListViewModel
+import com.vandenbreemen.modernsimmingapp.viewmodels.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private val onboardingViewModel: OnboardingViewModel by viewModels<OnboardingViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
     private val overviewViewModel: OverviewViewModel by viewModels<OverviewViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
     private val postListViewModel: PostListViewModel by viewModels<PostListViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
+    private val playbackViewModel: PlaybackViewModel by viewModels<PlaybackViewModel> { ModernSimmingViewModelFactory.fromActivity(this) }
 
     @Inject lateinit var servicesInteractor: ServicesInteractor
 
@@ -51,6 +49,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val postListFragment = PostListFragment()
+        postListViewModel.selectedPostLiveData.observe(this, Observer { selected->
+            playbackViewModel.play(selected)
+        })
         supportFragmentManager.beginTransaction().add(R.id.mainContentSection, postListFragment).commit()
 
         //  Set up view model stuff

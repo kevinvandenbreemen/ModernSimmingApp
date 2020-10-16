@@ -43,6 +43,13 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
 
     }
 
+    private val stopReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(TextToSpeechWorker::class.java.simpleName, "Received signal to stop speaking")
+            cleanup()
+        }
+    }
+
     init {
         interactor.currentUtteranceSeekerPublisher.subscribe { locationAndNumberOfUtterances->
             broadcaster.sendBroadcastForCurrentTTSPosition(locationAndNumberOfUtterances.first, locationAndNumberOfUtterances.second)
@@ -56,6 +63,9 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         val handler = Handler(handlerThread.looper)
 
         context.registerReceiver(seekReceiver, filter, null, handler)
+
+        val stopFilter = IntentFilter("${context.packageName}:${Broadcaster.TTS_STOP}")
+        context.registerReceiver(stopReceiver, stopFilter, null, handler)
     }
 
     override fun doWork(): Result {
@@ -73,6 +83,8 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
             sleep(20)
         } while(interactor.isCurrentlyInUse())
 
+        cleanup()
+
         return Result.success()
 
     }
@@ -81,6 +93,12 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         super.onStopped()
         interactor.close()
 
+        cleanup()
+    }
+
+    private fun cleanup() {
+        interactor.close()
         context.unregisterReceiver(seekReceiver)
+        context.unregisterReceiver(stopReceiver)
     }
 }

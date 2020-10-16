@@ -9,9 +9,7 @@ import android.util.Log
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostBean
 import com.vandenbreemen.modernsimmingapp.tts.PostParser
 import com.vandenbreemen.util.SimplePublisher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -45,6 +43,8 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
     val canSpeak = AtomicBoolean(false)
 
     override val currentUtteranceSeekerPublisher: SimplePublisher<Pair<Int, Int>> = SimplePublisher()
+
+    private var speechJob: Job? = null
 
     init {
         tts = TextToSpeech(context, TextToSpeech.OnInitListener { status->
@@ -100,7 +100,7 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
         }
         stringsToSpeak = listOf(*utterances.toTypedArray())
 
-        CoroutineScope(Dispatchers.Default).launch {
+        speechJob = CoroutineScope(Dispatchers.Default).launch {
 
             while(!canSpeak.get()) {
                 Thread.sleep(10)
@@ -174,6 +174,11 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
 
     override fun close() {
         shouldExitNow.set(true)
+
+        speechJob?.cancel("Closing TTS Interactor")
+        speechJob = null
+        isCurrentlyInUse.set(false)
+
         tts.stop()
         tts.shutdown()
     }

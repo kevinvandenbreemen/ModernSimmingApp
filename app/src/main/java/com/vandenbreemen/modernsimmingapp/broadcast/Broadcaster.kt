@@ -12,6 +12,7 @@ class Broadcaster(private val context: Context) {
         const val PARAM_TTS_CURRENT_POSITION = ModernSimmingBroadcasting.PARAM_TTS_CURRENT_POSITION
         const val PARAM_TTS_TOTAL_STRINGS_TO_SPEAK = ModernSimmingBroadcasting.PARAM_TTS_TOTAL_STRINGS_TO_SPEAK
         const val TTS_SEEK_TO = ModernSimmingBroadcasting.TTS_SEEK_TO
+        const val TTS_STOP = ModernSimmingBroadcasting.TTS_STOP
     }
 
     fun sendBroadcastForNewContentInGroup(groupName: String) {

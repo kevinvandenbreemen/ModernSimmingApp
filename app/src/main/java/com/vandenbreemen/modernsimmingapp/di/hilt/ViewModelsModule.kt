@@ -4,15 +4,13 @@ import android.content.Context
 import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
-import com.vandenbreemen.modernsimmingapp.viewmodels.AddGroupViewModel
-import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
-import com.vandenbreemen.modernsimmingapp.viewmodels.OverviewViewModel
-import com.vandenbreemen.modernsimmingapp.viewmodels.PostListViewModel
+import com.vandenbreemen.modernsimmingapp.viewmodels.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
 @InstallIn(ActivityComponent::class)
@@ -36,6 +34,11 @@ class ViewModelsModule {
     @Provides
     fun providesPostListViewModel(simContentProviderInteractor: SimContentProviderInteractor, @ActivityContext context: Context, configInteractor: ConfigInteractor): PostListViewModel {
         return PostListViewModel(simContentProviderInteractor, configInteractor, context)
+    }
+
+    @Provides
+    fun providesPlaybackViewModel(@ApplicationContext context: Context): PlaybackViewModel {
+        return PlaybackViewModel(context)
     }
 
 }

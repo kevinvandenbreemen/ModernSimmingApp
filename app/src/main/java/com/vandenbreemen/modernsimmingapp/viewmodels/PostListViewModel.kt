@@ -18,6 +18,12 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
                         private val configInteractor: ConfigInteractor,
                         private val context: Context): ViewModel() {
 
+    var selectedPostView: PostView?
+    set(value) {
+        selectedPost.postValue(value)
+    }
+    get() = null
+
     private val postsObserver: Observer<List<PostView>> = Observer { posts->
         postList.postValue(posts)
     }
@@ -52,6 +58,9 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
 
     private val postList: MutableLiveData<List<PostView>> = MutableLiveData()
     val postListLiveData: LiveData<List<PostView>> get() = postList
+
+    private val selectedPost: MutableLiveData<PostView> = MutableLiveData()
+    val selectedPostLiveData: LiveData<PostView> get() = selectedPost
 
     private lateinit var groupName: String
 

@@ -55,6 +55,11 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
     private val pausing = MutableLiveData<Unit>()
     val pausingLiveData: LiveData<Unit> get() = pausing
 
+    private val next = MutableLiveData<Unit>()
+    val nextLiveData: LiveData<Unit> get() = next
+    private val prev = MutableLiveData<Unit>()
+    val prevLiveData: LiveData<Unit> get() = prev
+
     init {
         val intentFilter = IntentFilter("${context.applicationContext.packageName}:TTSSeekPosition")
         context.applicationContext.registerReceiver(dictationPositionReceiver, intentFilter)
@@ -86,6 +91,14 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
         WorkManager.getInstance(context.applicationContext).run {
             enqueueUniqueWork(TextToSpeechWorker.WORK_NAME, ExistingWorkPolicy.REPLACE, workRequest)
         }
+    }
+
+    fun playNext() {
+        next.postValue(Unit)
+    }
+
+    fun playPrev() {
+        prev.postValue(Unit)
     }
 
     override fun onCleared() {

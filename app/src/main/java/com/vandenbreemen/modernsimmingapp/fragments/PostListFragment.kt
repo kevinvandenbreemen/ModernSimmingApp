@@ -34,8 +34,13 @@ class PostListFragment: Fragment() {
         viewBinding = LayoutPostListBinding.inflate(inflater, container, false)
 
         adapter = PostListRecyclerViewAdapter(itemSelectCallback = { postView->
-            viewModel.selectedPostView = postView
+            viewModel.selectPost(postView)
         })
+
+        viewModel.selectedIndexLiveData.observe(viewLifecycleOwner, Observer {
+            adapter.notifyDataSetChanged()
+        })
+
         viewBinding.apply {
             postList.apply {
                 adapter = this@PostListFragment.adapter

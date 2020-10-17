@@ -67,6 +67,14 @@ class MainActivity : AppCompatActivity() {
         postListViewModel.selectedPostLiveData.observe(this, Observer { selected ->
             playbackViewModel.play(selected)
         })
+
+        playbackViewModel.nextLiveData.observe(this, Observer {
+            postListViewModel.gotoNextPost()
+        })
+        playbackViewModel.prevLiveData.observe(this, Observer {
+            postListViewModel.gotoPrevPost()
+        })
+
         supportFragmentManager.beginTransaction().add(R.id.mainContentSection, postListFragment)
             .commit()
     }

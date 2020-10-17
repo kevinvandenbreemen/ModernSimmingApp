@@ -3,6 +3,7 @@ package com.vandenbreemen.modernsimmingapp.uicommon
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.vandenbreemen.modernsimmingapp.R
 import com.vandenbreemen.modernsimmingapp.databinding.LayoutPostItemBinding
 import com.vandenbreemen.modernsimmingapp.subscriber.PostView
 
@@ -22,6 +23,7 @@ class PostListRecyclerViewAdapter(private val itemSelectCallback: ((post: PostVi
     override fun onViewRecycled(holder: PostListViewHolder) {
         super.onViewRecycled(holder)
         holder.binding.root.setOnClickListener(null)
+        holder.binding.postTitle.setTextColor(holder.binding.root.context.resources.getColor(R.color.titleColor, holder.binding.root.context.theme))
     }
 
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
@@ -31,6 +33,10 @@ class PostListRecyclerViewAdapter(private val itemSelectCallback: ((post: PostVi
             holder.binding.root.setOnClickListener {
                 callback(post)
             }
+        }
+
+        if(post.selected) {
+            holder.binding.postTitle.setTextColor(holder.binding.root.context.resources.getColor(R.color.itemSelected, holder.binding.root.context.theme))
         }
     }
 

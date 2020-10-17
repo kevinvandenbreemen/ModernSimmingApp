@@ -11,4 +11,6 @@
     <color name="itemSelectBackground">#F1F1F1</color>
     <color name="itemSelectRipple">#A1A1A1</color>
 
+    <color name="itemSelected">#11FFAA</color>
+
 </resources>

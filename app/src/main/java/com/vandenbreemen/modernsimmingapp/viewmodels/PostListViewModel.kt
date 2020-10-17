@@ -18,14 +18,11 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
                         private val configInteractor: ConfigInteractor,
                         private val context: Context): ViewModel() {
 
-    var selectedPostView: PostView?
-    set(value) {
-        selectedPost.postValue(value)
-    }
-    get() = null
+    private var rawPostsList: List<PostView>? = null
 
     private val postsObserver: Observer<List<PostView>> = Observer { posts->
-        postList.postValue(posts)
+        rawPostsList = posts
+        postList.postValue(rawPostsList)
     }
 
     private val groupUpdatesReceiver = object: BroadcastReceiver() {
@@ -62,6 +59,9 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
     private val selectedPost: MutableLiveData<PostView> = MutableLiveData()
     val selectedPostLiveData: LiveData<PostView> get() = selectedPost
 
+    private val selectedIndex: MutableLiveData<Int> = MutableLiveData()
+    val selectedIndexLiveData: LiveData<Int> get() = selectedIndex
+
     private lateinit var groupName: String
 
     fun updateGroupName(groupName: String) {
@@ -72,6 +72,71 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
     private fun doUpdateGroupName(groupName: String) {
         this.groupName = groupName
         simContentProviderInteractor.fetchGroupPosts(this.groupName, 30)
+    }
+
+    fun selectPost(postView: PostView) {
+
+        //  Deselect current post
+        rawPostsList?.apply {
+            indexOfFirst { it.selected }.let {
+                if(it >= 0) {
+                    this[it].selected = false
+                }
+            }
+        }
+
+        postView.selected = true
+        selectedPost.postValue(postView)
+        rawPostsList?.indexOf(postView).apply {
+            selectedIndex.postValue(this)
+        }
+    }
+
+    /**
+     *
+     */
+    fun gotoNextPost() {
+        rawPostsList?.apply {
+            var selectedIndex = indexOfFirst { it.selected }
+
+            if(selectedIndex < 0) {
+                return
+            }
+
+            get(selectedIndex).selected = false
+
+            selectedIndex ++
+            selectedIndex %= size
+
+            get(selectedIndex).apply {
+                selected = true
+                selectPost(this)
+            }
+
+        }
+    }
+
+    fun gotoPrevPost() {
+        rawPostsList?.apply {
+            var selectedIndex = indexOfFirst { it.selected }
+
+            if(selectedIndex < 0) {
+                return
+            }
+
+            get(selectedIndex).selected = false
+
+            selectedIndex --
+            if(selectedIndex < 0) {
+                selectedIndex = size-1
+            }
+
+            get(selectedIndex).apply {
+                selected = true
+                selectPost(this)
+            }
+
+        }
     }
 
     override fun onCleared() {

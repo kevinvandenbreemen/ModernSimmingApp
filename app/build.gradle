@@ -96,7 +96,7 @@ dependencies {
     kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //  Client tier
-    implementation 'com.github.kevinvandenbreemen:ModernSimmingContentSubscriber:1.0.33-alpha'
+    implementation 'com.github.kevinvandenbreemen:ModernSimmingContentSubscriber:1.0.34-alpha'
 }
 
 kapt {

@@ -65,6 +65,13 @@ class FragmentPlaybackBar: Fragment() {
             setOnClickListener { playbackViewModel.playPause() }
         }
 
+        binding.nextPost.apply {
+            setOnClickListener { playbackViewModel.playNext() }
+        }
+        binding.prevPost.apply {
+            setOnClickListener { playbackViewModel.playPrev() }
+        }
+
         playbackViewModel.playingLiveData.observe(viewLifecycleOwner, Observer {
             binding.playPause.apply {
                 setImageResource(android.R.drawable.ic_media_pause)

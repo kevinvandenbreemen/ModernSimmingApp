@@ -13,6 +13,9 @@ class Broadcaster(private val context: Context) {
         const val PARAM_TTS_TOTAL_STRINGS_TO_SPEAK = ModernSimmingBroadcasting.PARAM_TTS_TOTAL_STRINGS_TO_SPEAK
         const val TTS_SEEK_TO = ModernSimmingBroadcasting.TTS_SEEK_TO
         const val TTS_STOP = ModernSimmingBroadcasting.TTS_STOP
+        const val TTS_PLAY_PAUSE = "TTS_PAUSE"
+        const val TTS_PAUSED = "TTS_PAUSED"
+        const val TTS_PLAYING = "TTS_PLAYING"
     }
 
     fun sendBroadcastForNewContentInGroup(groupName: String) {
@@ -25,6 +28,16 @@ class Broadcaster(private val context: Context) {
         val intent = Intent("${context.applicationContext.packageName}:TTSSeekPosition")
         intent.putExtra(PARAM_TTS_CURRENT_POSITION, position)
         intent.putExtra(PARAM_TTS_TOTAL_STRINGS_TO_SPEAK, totalStringsToSpeak)
+        context.sendBroadcast(intent)
+    }
+
+    fun sendBroadcastForPause() {
+        val intent = Intent("${context.applicationContext.packageName}:$TTS_PAUSED")
+        context.sendBroadcast(intent)
+    }
+
+    fun sendBroadcastForPlay() {
+        val intent = Intent("${context.applicationContext.packageName}:$TTS_PLAYING")
         context.sendBroadcast(intent)
     }
 

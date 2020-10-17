@@ -58,6 +58,28 @@ class FragmentPlaybackBar: Fragment() {
                 //  Un-needed
             }
         })
+
+        binding.playPause.apply {
+            isEnabled = false
+            isClickable = false
+            setOnClickListener { playbackViewModel.playPause() }
+        }
+
+        playbackViewModel.playingLiveData.observe(viewLifecycleOwner, Observer {
+            binding.playPause.apply {
+                setImageResource(android.R.drawable.ic_media_pause)
+                isEnabled = true
+                isClickable = true
+            }
+
+        })
+        playbackViewModel.pausingLiveData.observe(viewLifecycleOwner, Observer {
+            binding.playPause.apply {
+                setImageResource(android.R.drawable.ic_media_play)
+                isEnabled = true
+                isClickable = true
+            }
+        })
     }
 
 

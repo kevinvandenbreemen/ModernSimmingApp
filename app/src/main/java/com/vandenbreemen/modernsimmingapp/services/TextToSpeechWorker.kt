@@ -67,6 +67,25 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         val filter = IntentFilter("${context.packageName}:${Broadcaster.TTS_SEEK_TO}")
         context.registerReceiver(seekReceiver, filter, null, handler)
 
+        var paused = false
+        val playPauseReceiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                paused = !paused
+                if(paused){
+                    interactor.pause()
+                    broadcaster.sendBroadcastForPause()
+                } else {
+                    interactor.resume()
+                    broadcaster.sendBroadcastForPlay()
+                }
+            }
+        }
+        context.registerReceiver(playPauseReceiver, IntentFilter("${context.packageName}:${Broadcaster.TTS_PLAY_PAUSE}"))
+        stopCallbacks.add {
+            context.unregisterReceiver(playPauseReceiver)
+        }
+
+        //  Load/play the posts
         val posts = mutableListOf<PostBean>()
         args.inputData.getIntArray(KEY_POST_IDS)?.let { postIds ->
             postIds.forEach {
@@ -75,6 +94,7 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         }
 
         interactor.speakPosts(posts)
+        broadcaster.sendBroadcastForPlay()
 
         do {
             sleep(20)

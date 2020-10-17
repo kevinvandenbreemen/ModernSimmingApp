@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.vandenbreemen.modernsimmingapp.activities.FunctionalityTestingActivity
 import com.vandenbreemen.modernsimmingapp.animation.OnAnimationEndListener
 import com.vandenbreemen.modernsimmingapp.databinding.ActivityMainBinding
+import com.vandenbreemen.modernsimmingapp.fragments.FragmentPlaybackBar
 import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
 import com.vandenbreemen.modernsimmingapp.fragments.PostListFragment
 import com.vandenbreemen.modernsimmingapp.fragments.SelectGroupDialogFragment
@@ -48,19 +49,26 @@ class MainActivity : AppCompatActivity() {
             binding.testFunctionality.visibility = VISIBLE
         }
 
-        val postListFragment = PostListFragment()
-        postListViewModel.selectedPostLiveData.observe(this, Observer { selected->
-            playbackViewModel.play(selected)
-        })
-        supportFragmentManager.beginTransaction().add(R.id.mainContentSection, postListFragment).commit()
-
         //  Set up view model stuff
+        setupPostList()
+
+        supportFragmentManager.beginTransaction().add(R.id.playbackContainer, FragmentPlaybackBar()).commit()
+
         setupOnboardingViewModel()
 
         setupOverviewViewModel()
 
         setupMenuBehaviour()
 
+    }
+
+    private fun setupPostList() {
+        val postListFragment = PostListFragment()
+        postListViewModel.selectedPostLiveData.observe(this, Observer { selected ->
+            playbackViewModel.play(selected)
+        })
+        supportFragmentManager.beginTransaction().add(R.id.mainContentSection, postListFragment)
+            .commit()
     }
 
     private fun setupOverviewViewModel() {

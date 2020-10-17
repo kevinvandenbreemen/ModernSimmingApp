@@ -11,7 +11,6 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.services.TextToSpeechWorker
 import com.vandenbreemen.modernsimmingapp.subscriber.PostView
 
@@ -48,9 +47,6 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
                 TextToSpeechWorker.KEY_POST_IDS to arrayOf(postView.id)
             )
         ).build()
-
-        val stopIntent = Intent("${context.applicationContext.packageName}:${Broadcaster.TTS_SEEK_TO}")
-        context.sendBroadcast(stopIntent)
 
         WorkManager.getInstance(context.applicationContext).run {
             enqueueUniqueWork(TextToSpeechWorker.WORK_NAME, ExistingWorkPolicy.REPLACE, workRequest)

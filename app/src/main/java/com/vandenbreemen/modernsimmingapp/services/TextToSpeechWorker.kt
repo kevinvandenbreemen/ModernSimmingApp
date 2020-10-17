@@ -13,7 +13,6 @@ import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostBean
 import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
 import com.vandenbreemen.modernsimmingapp.fetcher.PostManagementInteractor
-import com.vandenbreemen.sim_assistant.mvp.tts.TTSInteractor
 import dagger.hilt.android.EntryPointAccessors
 import java.lang.Thread.sleep
 
@@ -24,56 +23,54 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         const val KEY_POST_IDS = "__postIDS"
     }
 
-    val backendEntryPoint: BackendEntryPoint get() = EntryPointAccessors.fromApplication(context.applicationContext, BackendEntryPoint::class.java)
+    private var stopCallbacks: MutableList<()->Unit> = mutableListOf()
 
-    private val interactor: TTSInteractor = backendEntryPoint.getTTSInteractor()
-    private val postManagementInterface: PostManagementInteractor = backendEntryPoint.getPostManagementInteractor()
-    private val broadcaster = Broadcaster(context)
+    override fun doWork(): Result {
 
-    private val seekReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent) {
-            val position = intent.getIntExtra(Broadcaster.PARAM_TTS_CURRENT_POSITION, -1)
-            if(position < 0) {
-                Log.e(javaClass.simpleName, "Missing position (${Broadcaster.PARAM_TTS_CURRENT_POSITION}) argument in broadcast to seek")
-                return
-            }
-            Log.i(javaClass.simpleName, "Seeking to $position")
-            interactor.seekTo(position)
+        //  Setup
+        val backendEntryPoint = EntryPointAccessors.fromApplication(context.applicationContext, BackendEntryPoint::class.java)
+        val broadcaster = Broadcaster(context)
+        val postManagementInteractor: PostManagementInteractor = backendEntryPoint.getPostManagementInteractor()
+
+        val interactor = backendEntryPoint.getTTSInteractor()
+        stopCallbacks.add {
+            interactor.close()
         }
-
-    }
-
-    private val stopReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d(TextToSpeechWorker::class.java.simpleName, "Received signal to stop speaking")
-            cleanup()
-        }
-    }
-
-    init {
-        interactor.currentUtteranceSeekerPublisher.subscribe { locationAndNumberOfUtterances->
-            broadcaster.sendBroadcastForCurrentTTSPosition(locationAndNumberOfUtterances.first, locationAndNumberOfUtterances.second)
-        }
-
-        val filter = IntentFilter("${context.packageName}:${Broadcaster.TTS_SEEK_TO}")
-        Log.d("KEVIN", "Intent filter action=${context.packageName}:${Broadcaster.TTS_SEEK_TO}")
 
         val handlerThread = HandlerThread("seek-handler")
         handlerThread.start()
         val handler = Handler(handlerThread.looper)
 
+
+
+        interactor.currentUtteranceSeekerPublisher.subscribe { locationAndNumberOfUtterances->
+            broadcaster.sendBroadcastForCurrentTTSPosition(locationAndNumberOfUtterances.first, locationAndNumberOfUtterances.second)
+        }
+
+        //  Receivers
+        val seekReceiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                val position = intent.getIntExtra(Broadcaster.PARAM_TTS_CURRENT_POSITION, -1)
+                if(position < 0) {
+                    Log.e(javaClass.simpleName, "Missing position (${Broadcaster.PARAM_TTS_CURRENT_POSITION}) argument in broadcast to seek")
+                    return
+                }
+                Log.i(javaClass.simpleName, "Seeking to $position")
+                interactor.seekTo(position)
+            }
+
+        }
+        stopCallbacks.add {
+            context.unregisterReceiver(seekReceiver)
+        }
+
+        val filter = IntentFilter("${context.packageName}:${Broadcaster.TTS_SEEK_TO}")
         context.registerReceiver(seekReceiver, filter, null, handler)
-
-        val stopFilter = IntentFilter("${context.packageName}:${Broadcaster.TTS_STOP}")
-        context.registerReceiver(stopReceiver, stopFilter, null, handler)
-    }
-
-    override fun doWork(): Result {
 
         val posts = mutableListOf<PostBean>()
         args.inputData.getIntArray(KEY_POST_IDS)?.let { postIds ->
             postIds.forEach {
-                postManagementInterface.loadPost(it)?.let { bean->posts.add(bean) }
+                postManagementInteractor.loadPost(it)?.let { bean->posts.add(bean) }
             }
         }
 
@@ -83,6 +80,7 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
             sleep(20)
         } while(interactor.isCurrentlyInUse())
 
+        Log.d(javaClass.simpleName, "TTS processing complete.  Cleaning up")
         cleanup()
 
         return Result.success()
@@ -91,14 +89,13 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
 
     override fun onStopped() {
         super.onStopped()
-        interactor.close()
+        Log.d(javaClass.simpleName, "work manager sent request for me to stop")
 
         cleanup()
     }
 
     private fun cleanup() {
-        interactor.close()
-        context.unregisterReceiver(seekReceiver)
-        context.unregisterReceiver(stopReceiver)
+        stopCallbacks.forEach { it() }
+        stopCallbacks.clear()
     }
 }

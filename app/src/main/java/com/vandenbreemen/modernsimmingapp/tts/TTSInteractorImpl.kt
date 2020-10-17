@@ -86,6 +86,8 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
 
     override fun speakPosts(sims: List<PostBean>) {
 
+        isCurrentlyInUse.set(true)
+
         val utterances = mutableListOf<String>()
         var index = 0
         val simToStartIndex = mutableMapOf<PostBean, Int>()
@@ -105,8 +107,6 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
             while(!canSpeak.get()) {
                 Thread.sleep(10)
             }
-
-            isCurrentlyInUse.set(true)
 
             while (hasMoreStrings()) {
                 waitForTTSCompletion()
@@ -173,6 +173,9 @@ class TTSInteractorImpl(context: Context) : TTSInteractor {
     }
 
     override fun close() {
+
+        Log.d(javaClass.simpleName, "Closing/Stopping TTS Interactor")
+
         shouldExitNow.set(true)
 
         speechJob?.cancel("Closing TTS Interactor")

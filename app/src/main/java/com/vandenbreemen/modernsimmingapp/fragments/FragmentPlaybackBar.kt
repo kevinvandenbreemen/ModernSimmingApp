@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -40,6 +41,22 @@ class FragmentPlaybackBar: Fragment() {
         playbackViewModel.dictationPositionLiveData.observe(viewLifecycleOwner, Observer { position->
             binding.seekBar.max = position.second
             binding.seekBar.progress = position.first
+        })
+
+        binding.seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if(fromUser) {
+                    playbackViewModel.seekTo(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                //  Un-needed
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                //  Un-needed
+            }
         })
     }
 

@@ -11,6 +11,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.services.TextToSpeechWorker
 import com.vandenbreemen.modernsimmingapp.subscriber.PostView
 
@@ -36,6 +37,12 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
     init {
         val intentFilter = IntentFilter("${context.applicationContext.packageName}:TTSSeekPosition")
         context.applicationContext.registerReceiver(dictationPositionReceiver, intentFilter)
+    }
+
+    fun seekTo(position: Int) {
+        val broadcast = Intent("${context.applicationContext.packageName}:${Broadcaster.TTS_SEEK_TO}")
+        broadcast.putExtra(Broadcaster.PARAM_TTS_CURRENT_POSITION, position)
+        context.sendBroadcast(broadcast)
     }
 
     /**

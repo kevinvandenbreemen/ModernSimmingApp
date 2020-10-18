@@ -60,6 +60,9 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
     private val prev = MutableLiveData<Unit>()
     val prevLiveData: LiveData<Unit> get() = prev
 
+    private val stopping = MutableLiveData<Unit>()
+    val stoppingLiveData: LiveData<Unit> get() = stopping
+
     init {
         val intentFilter = IntentFilter("${context.applicationContext.packageName}:TTSSeekPosition")
         context.applicationContext.registerReceiver(dictationPositionReceiver, intentFilter)
@@ -76,6 +79,11 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
 
     fun playPause() {
         context.sendBroadcast(Intent("${context.applicationContext.packageName}:${Broadcaster.TTS_PLAY_PAUSE}"))
+    }
+
+    fun stop() {
+        context.sendBroadcast(Intent("${context.applicationContext.packageName}:${Broadcaster.TTS_STOP}"))
+        stopping.postValue(Unit)
     }
 
     /**

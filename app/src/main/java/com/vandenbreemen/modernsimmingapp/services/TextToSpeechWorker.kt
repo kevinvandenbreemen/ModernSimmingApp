@@ -85,6 +85,16 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
             context.unregisterReceiver(playPauseReceiver)
         }
 
+        val stopReceiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                cleanup()
+            }
+        }
+        context.registerReceiver(stopReceiver, IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_STOP}"))
+        stopCallbacks.add {
+            context.unregisterReceiver(stopReceiver)
+        }
+
         //  Load/play the posts
         val posts = mutableListOf<PostBean>()
         args.inputData.getIntArray(KEY_POST_IDS)?.let { postIds ->

@@ -92,6 +92,17 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
         }
     }
 
+    fun clearSelectedPost() {
+        rawPostsList?.apply {
+            indexOfFirst { it.selected }.let {
+                if (it >= 0) {
+                    this[it].selected = false
+                    selectedIndex.postValue(it)
+                }
+            }
+        }
+    }
+
     /**
      *
      */

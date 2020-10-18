@@ -114,6 +114,7 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         cleanup()
     }
 
+    @Synchronized
     private fun cleanup() {
         stopCallbacks.forEach { it() }
         stopCallbacks.clear()

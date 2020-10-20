@@ -49,6 +49,14 @@ class MainActivity : AppCompatActivity() {
             binding.testFunctionality.visibility = VISIBLE
         }
 
+        binding.toolbar.apply {
+            setSupportActionBar(this)
+        }
+        supportActionBar?.apply {
+            setHomeAsUpIndicator(R.drawable.ic_hamburger)
+            setDisplayHomeAsUpEnabled(true)
+        }
+
         //  Set up view model stuff
         setupPostList()
 

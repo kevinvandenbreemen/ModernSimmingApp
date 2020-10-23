@@ -40,8 +40,7 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         val handlerThread = HandlerThread("seek-handler")
         handlerThread.start()
         val handler = Handler(handlerThread.looper)
-
-
+        stopCallbacks.add { handlerThread.quitSafely() }
 
         interactor.currentUtteranceSeekerPublisher.subscribe { locationAndNumberOfUtterances->
             broadcaster.sendBroadcastForCurrentTTSPosition(locationAndNumberOfUtterances.first, locationAndNumberOfUtterances.second)

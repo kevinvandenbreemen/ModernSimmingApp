@@ -1,20 +1,15 @@
 package com.vandenbreemen.modernsimmingapp
 
-import android.animation.Animator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.vandenbreemen.modernsimmingapp.activities.FunctionalityTestingActivity
-import com.vandenbreemen.modernsimmingapp.animation.OnAnimationEndListener
 import com.vandenbreemen.modernsimmingapp.databinding.ActivityMainBinding
 import com.vandenbreemen.modernsimmingapp.fragments.FragmentPlaybackBar
 import com.vandenbreemen.modernsimmingapp.fragments.OnboardingFragment
-import com.vandenbreemen.modernsimmingapp.fragments.PostListFragment
 import com.vandenbreemen.modernsimmingapp.fragments.SelectGroupDialogFragment
 import com.vandenbreemen.modernsimmingapp.services.ServicesInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.*
@@ -45,10 +40,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(BuildConfig.showTestingTools) {
-            binding.testFunctionality.visibility = VISIBLE
-        }
-
         //  Set up view model stuff
         setupPostList()
 
@@ -63,7 +54,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupPostList() {
-        val postListFragment = PostListFragment()
         postListViewModel.selectedPostLiveData.observe(this, Observer { selected ->
             playbackViewModel.play(selected)
         })
@@ -77,9 +67,6 @@ class MainActivity : AppCompatActivity() {
         playbackViewModel.stoppingLiveData.observe(this, Observer {
             postListViewModel.clearSelectedPost()
         })
-
-        supportFragmentManager.beginTransaction().add(R.id.mainContentSection, postListFragment)
-            .commit()
     }
 
     private fun setupOverviewViewModel() {
@@ -119,64 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupMenuBehaviour() {
 
-        binding.run {
-            selectGroup.setOnClickListener { _->
-                overviewViewModel.openGroupListMenu()
-                overviewViewModel.closeMainMenu()
-            }
-        }
 
-        overviewViewModel.openMenuLiveData.observe(this, Observer {
-
-            binding.run {
-                addGroupButton.alpha = 0.0f
-                addGroupButton.visibility = VISIBLE
-                addGroupButton.animate()
-                    .alpha(1.0f)
-                    .translationYBy(-20f)
-                    .duration = 100
-
-                selectGroup.apply {
-                    alpha = 0.0f
-                    visibility = VISIBLE
-                    animate()
-                        .alpha(1.0f)
-                        .translationYBy(-20f)
-                        .duration = 100
-                }
-            }
-
-        })
-
-        overviewViewModel.closeMenuLiveData.observe(this, Observer {
-            binding.run {
-                addGroupButton.animate()
-                    .alpha(0.0f)
-                    .translationYBy(20f)
-                    .setListener(object : OnAnimationEndListener() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            addGroupButton.run {
-                                visibility = GONE
-                                animate().setListener(null)
-                            }
-                        }
-                    }).duration = 100
-
-                selectGroup.apply {
-                    animate()
-                        .alpha(0.0f)
-                        .translationYBy(20f)
-                        .setListener(object : OnAnimationEndListener() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                selectGroup.run {
-                                    visibility = GONE
-                                    animate().setListener(null)
-                                }
-                            }
-                        }).duration = 100
-                }
-            }
-        })
     }
 
     override fun onResume() {

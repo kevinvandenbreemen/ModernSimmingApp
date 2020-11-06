@@ -3,6 +3,7 @@ package com.vandenbreemen.modernsimmingapp.di.hilt
 import android.content.Context
 import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
+import com.vandenbreemen.modernsimmingapp.navigation.NavigationViewModel
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
 import com.vandenbreemen.modernsimmingapp.viewmodels.*
 import dagger.Module
@@ -39,6 +40,11 @@ class ViewModelsModule {
     @Provides
     fun providesPlaybackViewModel(@ApplicationContext context: Context): PlaybackViewModel {
         return PlaybackViewModel(context)
+    }
+
+    @Provides
+    fun providesNavigationViewModel(): NavigationViewModel {
+        return NavigationViewModel()
     }
 
 }

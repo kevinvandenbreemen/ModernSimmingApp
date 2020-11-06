@@ -1,5 +1,6 @@
 package com.vandenbreemen.modernsimmingapp.di.hilt
 
+import com.vandenbreemen.modernsimmingapp.navigation.NavigationViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.OnboardingViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.OverviewViewModel
 import com.vandenbreemen.modernsimmingapp.viewmodels.PlaybackViewModel
@@ -17,5 +18,6 @@ interface FrontEndEntryPoint {
     fun getOverviewViewModel(): OverviewViewModel
     fun getPostListViewModel(): PostListViewModel
     fun getPlaybackViewModel(): PlaybackViewModel
+    fun getNavigationViewModel(): NavigationViewModel
 
 }

@@ -1,75 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".MainActivity">
+    >
 
-    <FrameLayout
-        android:id="@+id/mainContentSection"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        tools:context=".MainActivity">
 
-        app:layout_constraintBottom_toTopOf="@+id/playbackContainer"
-        app:layout_constraintTop_toTopOf="parent" />
+        <FrameLayout
+            android:id="@+id/mainContentSection"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
 
-    <Button
-        android:id="@+id/testFunctionality"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="testAppFunctionality"
-        android:text="@string/test_functionality"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
+            app:layout_constraintBottom_toTopOf="@+id/playbackContainer"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/playbackContainer"
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        app:layout_constraintBottom_toTopOf="@+id/testFunctionality"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom|end"
-        android:gravity="end|bottom"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/playbackContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/addGroupButton"
+        <Button
+            android:id="@+id/testFunctionality"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="addGroup"
-            android:text="@string/add_group"
+            android:onClick="testAppFunctionality"
+            android:text="@string/test_functionality"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible" />
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/selectGroup"
+        <FrameLayout
+            android:id="@+id/playbackContainer"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            app:layout_constraintBottom_toTopOf="@+id/testFunctionality"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="addGroup"
-            android:text="@string/select_group"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:layout_height="0dp"
+            android:layout_gravity="bottom|end"
+            android:gravity="end|bottom"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/playbackContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/actionsMenuButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="toggleActionsMenu"
-            android:text="@string/actions" />
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/addGroupButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="addGroup"
+                android:text="@string/add_group"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/selectGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="addGroup"
+                android:text="@string/select_group"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/actionsMenuButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="toggleActionsMenu"
+                android:text="@string/actions" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>

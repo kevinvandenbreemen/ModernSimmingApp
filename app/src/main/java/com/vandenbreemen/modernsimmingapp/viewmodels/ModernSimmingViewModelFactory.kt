@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.vandenbreemen.modernsimmingapp.di.hilt.FrontEndEntryPoint
+import com.vandenbreemen.modernsimmingapp.navigation.NavigationViewModel
 import dagger.hilt.android.EntryPointAccessors
 
 class ModernSimmingViewModelFactory(private val frontEndEntryPoint: FrontEndEntryPoint): ViewModelProvider.Factory {
@@ -32,6 +33,9 @@ class ModernSimmingViewModelFactory(private val frontEndEntryPoint: FrontEndEntr
         }
         if(modelClass.isAssignableFrom(PlaybackViewModel::class.java)) {
             return frontEndEntryPoint.getPlaybackViewModel() as T
+        }
+        if(modelClass.isAssignableFrom(NavigationViewModel::class.java)) {
+            return frontEndEntryPoint.getNavigationViewModel() as T
         }
 
         throw IllegalArgumentException("Type $modelClass not supported")

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/dev_settings"
+        android:summary="@string/dev_settings_summary"
+        >
+        <SwitchPreference android:title="@string/stop_playback_on_start"
+            android:defaultValue="true"
+            android:key="stop_playback_on_start"
+            android:summary="@string/stop_playback_start_summary"
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>

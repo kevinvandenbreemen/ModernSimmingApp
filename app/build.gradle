@@ -103,6 +103,9 @@ dependencies {
 
     //  Client tier
     implementation 'com.github.kevinvandenbreemen:ModernSimmingContentSubscriber:1.0.34-alpha'
+
+    def preference_version = "1.1.1"
+    implementation "androidx.preference:preference-ktx:$preference_version"
 }
 
 kapt {

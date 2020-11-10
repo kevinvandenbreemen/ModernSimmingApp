@@ -1,6 +1,8 @@
 package com.vandenbreemen.modernsimmingapp.di.hilt
 
 import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
+import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
+import com.vandenbreemen.modernsimmingapp.config.SharedPreferencesInteractor
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.fetcher.FetchPostInteractor
 import com.vandenbreemen.modernsimmingapp.fetcher.PostManagementInteractor
@@ -19,5 +21,7 @@ interface BackendEntryPoint {
     fun getBroadcaster(): Broadcaster
     fun getTTSInteractor(): TTSInteractor
     fun getPostManagementInteractor(): PostManagementInteractor
+    fun getSharedPreferencesInteractor(): SharedPreferencesInteractor
+    fun getConfigInteractor(): ConfigInteractor
 
 }

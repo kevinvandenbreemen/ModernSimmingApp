@@ -31,6 +31,20 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         val backendEntryPoint = EntryPointAccessors.fromApplication(context.applicationContext, BackendEntryPoint::class.java)
         val broadcaster = Broadcaster(context)
         val postManagementInteractor: PostManagementInteractor = backendEntryPoint.getPostManagementInteractor()
+        val sharedPreferencesInteractor = backendEntryPoint.getSharedPreferencesInteractor()
+        val configInteractor = backendEntryPoint.getConfigInteractor()
+
+        if(configInteractor.isPlaybackStarted() && sharedPreferencesInteractor.getBoolean("stop_playback_on_start", true)) {
+            Log.d(javaClass.simpleName, "Speech was previously started.  Exiting")
+            configInteractor.setPlaybackStarted(false)
+            return Result.success()
+        }
+
+        configInteractor.setPlaybackStarted(true)
+        stopCallbacks.add {
+            Log.d(javaClass.simpleName, "Switching previously started playback flag to off")
+            configInteractor.setPlaybackStarted(false)
+        }
 
         val interactor = backendEntryPoint.getTTSInteractor()
         stopCallbacks.add {

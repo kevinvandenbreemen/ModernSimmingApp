@@ -1,7 +1,9 @@
 package com.vandenbreemen.modernsimmingapp.di.hilt
 
 import android.content.Context
+import androidx.preference.PreferenceManager
 import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
+import com.vandenbreemen.modernsimmingapp.config.SharedPreferencesInteractor
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.data.repository.GoogleGroupsRepository
 import com.vandenbreemen.modernsimmingapp.fetcher.FetchPostInteractor
@@ -51,6 +53,11 @@ class InteractorsModule {
     @Provides
     fun providesConfigInteractor(@ApplicationContext context: Context): ConfigInteractor {
         return ConfigInteractor(context)
+    }
+
+    @Provides
+    fun providesSharedPreferences(@ApplicationContext context: Context): SharedPreferencesInteractor {
+        return SharedPreferencesInteractor(PreferenceManager.getDefaultSharedPreferences(context))
     }
 
 }

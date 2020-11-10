@@ -17,4 +17,12 @@ class ConfigInteractor(private val context: Context) {
         return sharedPreferences.getString("selectedGroup", null)
     }
 
+    fun setPlaybackStarted(started: Boolean) {
+        sharedPreferences.edit().putBoolean("playbackStarted", started).apply()
+    }
+
+    fun isPlaybackStarted(): Boolean {
+        return sharedPreferences.getBoolean("playbackStarted", false)
+    }
+
 }

@@ -25,4 +25,13 @@ class ConfigInteractor(private val context: Context) {
         return sharedPreferences.getBoolean("playbackStarted", false)
     }
 
+    fun setSelectedPostId(id: Int) {
+        sharedPreferences.edit().putInt("selectedPostId", id).apply()
+    }
+
+    fun getSelectedPostId(): Int? {
+        val ret = sharedPreferences.getInt("selectedPostId", -1)
+        return if(ret > 0) { ret } else null
+    }
+
 }

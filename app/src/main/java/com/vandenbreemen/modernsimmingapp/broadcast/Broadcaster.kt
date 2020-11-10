@@ -16,6 +16,7 @@ class Broadcaster(private val context: Context) {
         const val TTS_PLAY_PAUSE = ModernSimmingBroadcasting.TTS_PLAY_PAUSE
         const val TTS_PAUSED = ModernSimmingBroadcasting.TTS_PAUSED
         const val TTS_PLAYING = ModernSimmingBroadcasting.TTS_PLAYING
+        const val TTS_FINISHED = "TTS_FINISHED_PLAYBACK"
     }
 
     fun sendBroadcastForNewContentInGroup(groupName: String) {
@@ -38,6 +39,11 @@ class Broadcaster(private val context: Context) {
 
     fun sendBroadcastForPlay() {
         val intent = Intent("${context.applicationContext.packageName}:$TTS_PLAYING")
+        context.sendBroadcast(intent)
+    }
+
+    fun sendBroadcastForDonePlaying() {
+        val intent = Intent("${context.applicationContext.packageName}:$TTS_FINISHED")
         context.sendBroadcast(intent)
     }
 

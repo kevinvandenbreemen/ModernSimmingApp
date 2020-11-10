@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.config.ConfigInteractor
 import com.vandenbreemen.modernsimmingapp.subscriber.PostView
 import com.vandenbreemen.modernsimmingapp.subscriber.SimContentProviderInteractor
@@ -42,11 +43,21 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
 
     }
 
+    private val playbackCompleteReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(PostListViewModel::class.java.simpleName, "Received notification that playback is complete.  Clearing selected post on UI")
+            clearSelectedPost()
+        }
+    }
+
     init {
         simContentProviderInteractor.postsLiveDate.observeForever(postsObserver)
 
         val newPostsFilter = IntentFilter("${context.applicationContext.packageName}:NewPosts")
         context.registerReceiver(groupUpdatesReceiver, newPostsFilter)
+
+        val playbackCompleteFilter = IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_FINISHED}")
+        context.registerReceiver(playbackCompleteReceiver, playbackCompleteFilter)
 
         configInteractor.getSelectedGroup()?.let { selectedGroup ->
             doUpdateGroupName(selectedGroup)
@@ -155,6 +166,7 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
 
         simContentProviderInteractor.postsLiveDate.removeObserver(postsObserver)
         context.unregisterReceiver(groupUpdatesReceiver)
+        context.unregisterReceiver(playbackCompleteReceiver)
     }
 
 }

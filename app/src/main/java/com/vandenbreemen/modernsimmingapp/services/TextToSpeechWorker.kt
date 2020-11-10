@@ -124,6 +124,7 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         } while(interactor.isCurrentlyInUse())
 
         Log.d(javaClass.simpleName, "TTS processing complete.  Cleaning up")
+        broadcaster.sendBroadcastForDonePlaying()
         cleanup()
 
         return Result.success()

@@ -17,6 +17,16 @@ class Broadcaster(private val context: Context) {
         const val TTS_PAUSED = ModernSimmingBroadcasting.TTS_PAUSED
         const val TTS_PLAYING = ModernSimmingBroadcasting.TTS_PLAYING
         const val TTS_FINISHED = "TTS_FINISHED_PLAYBACK"
+
+        /**
+         * Indicates that the backend has started playing a post on its own (say after app restart)
+         */
+        const val TTS_START_AUTO_PLAY = "TTS_START_AUTO_PLAY"
+
+        /**
+         * ID of a post that an operation/action/etc broadcast concerns
+         */
+        const val TTS_POST_ID = "__TTS_POSTID"
     }
 
     fun sendBroadcastForNewContentInGroup(groupName: String) {
@@ -44,6 +54,12 @@ class Broadcaster(private val context: Context) {
 
     fun sendBroadcastForDonePlaying() {
         val intent = Intent("${context.applicationContext.packageName}:$TTS_FINISHED")
+        context.sendBroadcast(intent)
+    }
+
+    fun sendBroadcastForAutoplayStart(postId: Int) {
+        val intent = Intent("${context.applicationContext.packageName}:$TTS_START_AUTO_PLAY")
+        intent.putExtra(TTS_POST_ID, postId)
         context.sendBroadcast(intent)
     }
 

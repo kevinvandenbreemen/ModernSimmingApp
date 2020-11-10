@@ -34,10 +34,17 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
         val sharedPreferencesInteractor = backendEntryPoint.getSharedPreferencesInteractor()
         val configInteractor = backendEntryPoint.getConfigInteractor()
 
-        if(configInteractor.isPlaybackStarted() && sharedPreferencesInteractor.getBoolean("stop_playback_on_start", true)) {
-            Log.d(javaClass.simpleName, "Speech was previously started.  Exiting")
-            configInteractor.setPlaybackStarted(false)
-            return Result.success()
+        if(configInteractor.isPlaybackStarted()) {
+            if(sharedPreferencesInteractor.getBoolean("stop_playback_on_start", true)) {
+                Log.d(javaClass.simpleName, "Speech was previously started.  Exiting")
+                configInteractor.setPlaybackStarted(false)
+                return Result.success()
+            }
+
+            //  Otherwise we need to signal the UI that we're going to be playing again!
+            args.inputData.getIntArray(KEY_POST_IDS)?.let { postIds ->
+                broadcaster.sendBroadcastForAutoplayStart(postIds[0])
+            }
         }
 
         configInteractor.setPlaybackStarted(true)

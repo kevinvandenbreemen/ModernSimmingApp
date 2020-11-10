@@ -43,6 +43,16 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
 
     }
 
+    private val autoplayReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            val postId = intent.getIntExtra(Broadcaster.TTS_POST_ID, -1)
+            Log.d(PostListViewModel::class.java.simpleName, "Received broadcast for auto-play of post ID - $postId")
+            rawPostsList?.firstOrNull { postView -> postView.id == postId }?.let {
+                doSelectPost(it, false)
+            }
+        }
+    }
+
     private val playbackCompleteReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d(PostListViewModel::class.java.simpleName, "Received notification that playback is complete.  Clearing selected post on UI")
@@ -59,6 +69,9 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
         val playbackCompleteFilter = IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_FINISHED}")
         context.registerReceiver(playbackCompleteReceiver, playbackCompleteFilter)
 
+        val autoPlayFilter = IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_START_AUTO_PLAY}")
+        context.registerReceiver(autoplayReceiver, autoPlayFilter)
+
         configInteractor.getSelectedGroup()?.let { selectedGroup ->
             doUpdateGroupName(selectedGroup)
         }
@@ -68,9 +81,17 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
     val postListLiveData: LiveData<List<PostView>> get() = postList
 
     private val selectedPost: MutableLiveData<PostView> = MutableLiveData()
+
+    /**
+     * Post that has been selected.  Use this for deciding to playback a post etc.
+     */
     val selectedPostLiveData: LiveData<PostView> get() = selectedPost
 
     private val selectedIndex: MutableLiveData<Int> = MutableLiveData()
+
+    /**
+     * Selected post index.  Use this for updating the UI but never for deciding on playback etc.
+     */
     val selectedIndexLiveData: LiveData<Int> get() = selectedIndex
 
     private lateinit var groupName: String
@@ -86,7 +107,10 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
     }
 
     fun selectPost(postView: PostView) {
+        doSelectPost(postView, true)
+    }
 
+    private fun doSelectPost(postView: PostView, broadcastSelectedPostView: Boolean) {
         //  Deselect current post
         rawPostsList?.apply {
             indexOfFirst { it.selected }.let {
@@ -97,7 +121,11 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
         }
 
         postView.selected = true
-        selectedPost.postValue(postView)
+
+        if(broadcastSelectedPostView) {
+            selectedPost.postValue(postView)
+        }
+
         rawPostsList?.indexOf(postView).apply {
             selectedIndex.postValue(this)
         }
@@ -167,6 +195,7 @@ class PostListViewModel(private val simContentProviderInteractor: SimContentProv
         simContentProviderInteractor.postsLiveDate.removeObserver(postsObserver)
         context.unregisterReceiver(groupUpdatesReceiver)
         context.unregisterReceiver(playbackCompleteReceiver)
+        context.unregisterReceiver(autoplayReceiver)
     }
 
 }

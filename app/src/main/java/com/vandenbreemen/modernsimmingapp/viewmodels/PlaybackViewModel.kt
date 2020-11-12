@@ -42,6 +42,13 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
         }
     }
 
+    private val playbackCompleteReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(PlaybackViewModel::class.java.simpleName, "Received notification that playback is complete.  Clearing Play/Pause")
+            stopping.postValue(Unit)
+        }
+    }
+
     private val dictationPosition = MutableLiveData<Pair<Int, Int>>()
 
     /**
@@ -61,6 +68,10 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
     val prevLiveData: LiveData<Unit> get() = prev
 
     private val stopping = MutableLiveData<Unit>()
+
+    /**
+     * Indicates playback is about to / has stopped either because the user has pressed stop or else because playback has been completed
+     */
     val stoppingLiveData: LiveData<Unit> get() = stopping
 
     init {
@@ -69,6 +80,7 @@ class PlaybackViewModel(private val context: Context): ViewModel() {
 
         context.applicationContext.registerReceiver(playReceiver, IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_PLAYING}"))
         context.applicationContext.registerReceiver(pauseReceiver, IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_PAUSED}"))
+        context.applicationContext.registerReceiver(playbackCompleteReceiver, IntentFilter("${context.applicationContext.packageName}:${Broadcaster.TTS_FINISHED}"))
     }
 
     fun seekTo(position: Int) {

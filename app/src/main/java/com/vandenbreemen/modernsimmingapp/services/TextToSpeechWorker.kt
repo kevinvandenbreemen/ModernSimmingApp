@@ -43,6 +43,7 @@ class TextToSpeechWorker(private val context: Context, private val args: WorkerP
 
             //  Otherwise we need to signal the UI that we're going to be playing again!
             args.inputData.getIntArray(KEY_POST_IDS)?.let { postIds ->
+                broadcaster.sendBroadcastForPlay()
                 broadcaster.sendBroadcastForAutoplayStart(postIds[0])
             }
         }

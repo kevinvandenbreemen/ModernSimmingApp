@@ -20,4 +20,5 @@
     <string name="stop_playback_start_summary">Toggle resuming playback when the app has been stopped.  Currently this behaviour is a \"feature\" and I\'m not sure if I want to keep it</string>
     <string name="dev_settings">Development Settings</string>
     <string name="dev_settings_summary">Configure new features</string>
+    <string name="notification_name">Modern Simming App</string>
 </resources>

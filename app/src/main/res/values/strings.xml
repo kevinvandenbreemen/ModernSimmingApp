@@ -21,4 +21,5 @@
     <string name="dev_settings">Development Settings</string>
     <string name="dev_settings_summary">Configure new features</string>
     <string name="notification_name">Modern Simming App</string>
+    <string name="notification_title_new_posts">New Post(s) in %s</string>
 </resources>

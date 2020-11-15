@@ -1,9 +1,13 @@
 package com.vandenbreemen.modernsimmingapp.services
 
+import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.vandenbreemen.modernsimmingapp.ModernSimmingApp
+import com.vandenbreemen.modernsimmingapp.R
 import com.vandenbreemen.modernsimmingapp.broadcast.Broadcaster
 import com.vandenbreemen.modernsimmingapp.data.localstorage.PostsDatabase
 import com.vandenbreemen.modernsimmingapp.di.hilt.BackendEntryPoint
@@ -41,6 +45,16 @@ class PostFetchingWorker(private val context: Context, workerParameters: WorkerP
                     if(interactor.fetch(group.name, 10)){
                         Log.i(javaClass.canonicalName, "New posts arrived.  Sending broadcast")
                         broadcaster.sendBroadcastForNewContentInGroup(group.name)
+
+                        (context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager)?.run {
+                            notify(42, NotificationCompat.Builder(context, ModernSimmingApp.NOTIFICATION_ID).run {
+                                setContentTitle(context.getString(R.string.notification_title_new_posts, group.name))
+                                setSmallIcon(R.drawable.ic_modernsimmingapp)
+                                build()
+                            })
+                        }
+
+
                     }
                 }
             }

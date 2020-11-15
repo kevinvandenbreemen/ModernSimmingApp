@@ -50,8 +50,19 @@ class PostFetchingWorker(private val context: Context, workerParameters: WorkerP
                         Log.i(javaClass.canonicalName, "New posts arrived.  Sending broadcast")
                         broadcaster.sendBroadcastForNewContentInGroup(group.name)
 
+                        val isInBackground = (context.applicationContext as? ModernSimmingApp)?.run {
+                            isInBackground
+                        } ?: kotlin.run { true }
+
+                        //  Don't post a notification if the app is not in the background
+                        if(!isInBackground) {
+                            return@withContext
+                        }
+
                         (context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager)?.run {
                             val intent = Intent(context, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+
                             notify(42, NotificationCompat.Builder(context, ModernSimmingApp.NOTIFICATION_ID).run {
                                 setContentTitle(context.getString(R.string.notification_title_new_posts, group.name))
                                 setSmallIcon(R.drawable.ic_modernsimmingapp)
